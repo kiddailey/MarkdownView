@@ -17,11 +17,13 @@ namespace MarkdownView.Samples
             var mdView = new Xam.Forms.Markdown.MarkdownView();
             mdView.Markdown = embedded;
             mdView.RelativeUrlHost = "";
+            mdView.Theme.Paragraph.LineHeight = 2;
             this.Content = new ScrollView() { Content = mdView };
 
             MessagingCenter.Subscribe<MenuPage, string>(this, "theme", (s, arg) =>
             {
                 mdView.Theme = arg == "dark" ? (MarkdownTheme)new DarkMarkdownTheme() : new LightMarkdownTheme();
+                mdView.Theme.Paragraph.LineHeight = 2;
             });
 
             MessagingCenter.Subscribe<MenuPage, string>(this, "new_md", async (s, arg) => {
