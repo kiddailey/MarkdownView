@@ -7,6 +7,8 @@
         public FontAttributes Attributes { get; set; } = FontAttributes.None;
 
         public float FontSize { get; set; } = 12;
+        
+        public float LineHeight { get; set; } = -1;
 
         public Color ForegroundColor { get; set; } = Color.Black;
 

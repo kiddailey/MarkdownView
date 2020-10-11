@@ -222,6 +222,7 @@
                     TextColor = this.Theme.Paragraph.ForegroundColor,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
+                    LineHeight = this.Theme.Paragraph.LineHeight,
                 };
             }
             else
@@ -276,7 +277,7 @@
 
             var label = new Label
             {
-                FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize),
+                FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
             };
 
             AttachLinks(label);
@@ -304,7 +305,7 @@
             var foregroundColor = isQuoted ? this.Theme.Quote.ForegroundColor : style.ForegroundColor;
             var label = new Label
             {
-                FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize),
+                FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
             };
             AttachLinks(label);
             this.stack.Children.Add(label);
@@ -367,6 +368,7 @@
                 FontFamily = style.FontFamily,
                 FontSize = style.FontSize,
                 Text = string.Join(Environment.NewLine, block.Lines),
+                LineHeight = style.LineHeight,
             };
             stack.Children.Add(new Frame()
             {
@@ -378,13 +380,13 @@
             });
         }
 
-        private FormattedString CreateFormatted(ContainerInline inlines, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size)
+        private FormattedString CreateFormatted(ContainerInline inlines, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
         {
             var fs = new FormattedString();
 
             foreach (var inline in inlines)
             {
-                var spans = CreateSpans(inline, family, attributes, foregroundColor, backgroundColor, size);
+                var spans = CreateSpans(inline, family, attributes, foregroundColor, backgroundColor, size, lineHeight);
                 if (spans != null)
                 {
                     foreach (var span in spans)
@@ -397,7 +399,7 @@
             return fs;
         }
 
-        private Span[] CreateSpans(Inline inline, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size)
+        private Span[] CreateSpans(Inline inline, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
         {
             switch (inline)
             {
@@ -412,12 +414,13 @@
                             BackgroundColor = backgroundColor,
                             FontSize = size,
                             FontFamily = family,
+                            LineHeight = lineHeight,
                         }
                     };
 
                 case EmphasisInline emphasis:
                     var childAttributes = attributes | (emphasis.IsDouble ? FontAttributes.Bold : FontAttributes.Italic);
-                    return emphasis.SelectMany(x => CreateSpans(x, family, childAttributes, foregroundColor, backgroundColor, size)).ToArray();
+                    return emphasis.SelectMany(x => CreateSpans(x, family, childAttributes, foregroundColor, backgroundColor, size, lineHeight)).ToArray();
 
                 case LineBreakInline breakline:
                     return new[] { new Span { Text = "\n" } };
@@ -449,7 +452,7 @@
                     }
                     else
                     {
-                        var spans = link.SelectMany(x => CreateSpans(x, this.Theme.Link.FontFamily ?? family, this.Theme.Link.Attributes, this.Theme.Link.ForegroundColor, this.Theme.Link.BackgroundColor, size)).ToArray();
+                        var spans = link.SelectMany(x => CreateSpans(x, this.Theme.Link.FontFamily ?? family, this.Theme.Link.Attributes, this.Theme.Link.ForegroundColor, this.Theme.Link.BackgroundColor, size, lineHeight)).ToArray();
                         links.Add(new KeyValuePair<string, string>(string.Join("",spans.Select(x => x.Text)), url));
                         return spans;
                     }
