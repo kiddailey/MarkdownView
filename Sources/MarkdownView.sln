@@ -2,15 +2,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xam.Forms.MarkdownView", "MarkdownView.Portable\Xam.Forms.MarkdownView.csproj", "{17728834-C586-4C2E-A1D7-F2E7AD1E1FBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xam.Forms.Markdown", "Markdown.Portable\Xam.Forms.Markdown.csproj", "{17728834-C586-4C2E-A1D7-F2E7AD1E1FBF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{BD895E94-AF92-409F-8D79-A5DAD7556CC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownView.Samples", "MarkdownView.Samples\MarkdownView.Samples.csproj", "{343F37AF-8929-4C43-90F6-57050218B243}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdown.Samples", "Markdown.Samples\Markdown.Samples.csproj", "{343F37AF-8929-4C43-90F6-57050218B243}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownView.Samples.iOS", "iOS\MarkdownView.Samples.iOS.csproj", "{49523DF2-73C7-4149-AD32-34B6669B72B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown.Samples.iOS", "iOS\Markdown.Samples.iOS.csproj", "{49523DF2-73C7-4149-AD32-34B6669B72B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownView.Samples.Droid", "Droid\MarkdownView.Samples.Droid.csproj", "{5BD2DA5D-406C-4A82-9DBC-A4294B50738A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown.Samples.Droid", "Droid\Markdown.Samples.Droid.csproj", "{5BD2DA5D-406C-4A82-9DBC-A4294B50738A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
