@@ -1,11 +1,11 @@
 ﻿namespace Xam.Forms.Markdown.Extensions
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Net;
     using SkiaSharp;
     using Xamarin.Forms;
-    using System.Diagnostics;
 
     public static class ImageExtensions
     {
@@ -16,7 +16,7 @@
                 var req = (HttpWebRequest)WebRequest.Create(uri);
 
                 var svg = new SkiaSharp.Extended.Svg.SKSvg();
-                req.BeginGetResponse((ar) => 
+                req.BeginGetResponse((ar) =>
                 {
                     var res = (ar.AsyncState as HttpWebRequest).EndGetResponse(ar) as HttpWebResponse;
                     using (var stream = res.GetResponseStream())

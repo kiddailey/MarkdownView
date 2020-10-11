@@ -10,7 +10,7 @@ namespace MarkdownView.Samples
 
             MainPage = new MasterDetailPage()
             {
-                Master = new MenuPage() { Title = "Menu"},
+                Master = new MenuPage() { Title = "Menu" },
                 Detail = new MarkdownView_SamplesPage()
             };
         }

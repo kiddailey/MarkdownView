@@ -1,14 +1,14 @@
 ﻿namespace Xam.Forms.Markdown
 {
-    using System.Linq;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-    using Xamarin.Forms;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using Extensions;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+    using Xamarin.Forms;
 
     public class MarkdownView : ContentView
     {
@@ -40,9 +40,9 @@
 
         public static readonly BindableProperty ThemeProperty = BindableProperty.Create(nameof(Theme), typeof(MarkdownTheme), typeof(MarkdownView), Global, propertyChanged: OnMarkdownChanged);
 
-        private bool isQuoted;
+        bool isQuoted;
 
-        private List<View> queuedViews = new List<View>();
+        List<View> queuedViews = new List<View>();
 
         static void OnMarkdownChanged(BindableObject bindable, object oldValue, object newValue)
         {
@@ -50,46 +50,46 @@
             view.RenderMarkdown();
         }
 
-        private StackLayout stack;
+        StackLayout stack;
 
-        private List<KeyValuePair<string, string>> links = new List<KeyValuePair<string, string>>();
+        List<KeyValuePair<string, string>> links = new List<KeyValuePair<string, string>>();
 
-        private void RenderMarkdown()
+        void RenderMarkdown()
         {
             stack = new StackLayout()
             {
-                Spacing = this.Theme.Margin,
+                Spacing = Theme.Margin,
             };
 
-            this.Padding = this.Theme.Margin;
+            Padding = Theme.Margin;
 
-            this.BackgroundColor = this.Theme.BackgroundColor;
+            BackgroundColor = Theme.BackgroundColor;
 
-            if(!string.IsNullOrEmpty(this.Markdown))
+            if (!string.IsNullOrEmpty(Markdown))
             {
-                var parsed = Markdig.Markdown.Parse(this.Markdown);
-                this.Render(parsed.AsEnumerable());
+                var parsed = Markdig.Markdown.Parse(Markdown);
+                Render(parsed.AsEnumerable());
             }
 
-            this.Content = stack;
+            Content = stack;
         }
 
-        private void Render(IEnumerable<Block> blocks)
+        void Render(IEnumerable<Block> blocks)
         {
             foreach (var block in blocks)
             {
-                this.Render(block);
+                Render(block);
             }
         }
 
-        private void AttachLinks(View view)
+        void AttachLinks(View view)
         {
             if (links.Any())
             {
                 var blockLinks = links;
                 view.GestureRecognizers.Add(new TapGestureRecognizer
                 {
-                    Command = new Command(async () => 
+                    Command = new Command(async () =>
                     {
                         try
                         {
@@ -109,12 +109,12 @@
                 });
 
                 links = new List<KeyValuePair<string, string>>();
-            } 
+            }
         }
 
         #region Rendering blocks
 
-        private void Render(Block block)
+        void Render(Block block)
         {
             switch (block)
             {
@@ -151,21 +151,21 @@
                     break;
             }
 
-            if(queuedViews.Any())
+            if (queuedViews.Any())
             {
                 foreach (var view in queuedViews)
                 {
-                    this.stack.Children.Add(view);
+                    stack.Children.Add(view);
                 }
                 queuedViews.Clear();
             }
         }
 
-        private int listScope;
+        int listScope;
 
-        private void Render(ThematicBreakBlock block)
+        void Render(ThematicBreakBlock block)
         {
-            var style = this.Theme.Separator;
+            var style = Theme.Separator;
 
             if (style.BorderSize > 0)
             {
@@ -177,38 +177,38 @@
             }
         }
 
-        private void Render(ListBlock block)
+        void Render(ListBlock block)
         {
             listScope++;
 
-            for (int i = 0; i < block.Count(); i++)
+            for (var i = 0; i < block.Count(); i++)
             {
                 var item = block.ElementAt(i);
 
                 if (item is ListItemBlock itemBlock)
                 {
-                    this.Render(block, i + 1, itemBlock);
+                    Render(block, i + 1, itemBlock);
                 }
             }
 
             listScope--;
         }
 
-        private void Render(ListBlock parent, int index, ListItemBlock block)
+        void Render(ListBlock parent, int index, ListItemBlock block)
         {
-            var initialStack = this.stack;
+            var initialStack = stack;
 
-            this.stack = new StackLayout()
+            stack = new StackLayout()
             {
-                Spacing = this.Theme.Margin,
+                Spacing = Theme.Margin,
             };
 
-            this.Render(block.AsEnumerable());
+            Render(block.AsEnumerable());
 
             var horizontalStack = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                Margin = new Thickness(listScope * this.Theme.Margin, 0, 0, 0),
+                Margin = new Thickness(listScope * Theme.Margin, 0, 0, 0),
             };
 
             View bullet;
@@ -218,11 +218,11 @@
                 bullet = new Label
                 {
                     Text = $"{index}.",
-                    FontSize = this.Theme.Paragraph.FontSize,
-                    TextColor = this.Theme.Paragraph.ForegroundColor,
+                    FontSize = Theme.Paragraph.FontSize,
+                    TextColor = Theme.Paragraph.ForegroundColor,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    LineHeight = this.Theme.Paragraph.LineHeight,
+                    LineHeight = Theme.Paragraph.LineHeight,
                 };
             }
             else
@@ -232,7 +232,7 @@
                     WidthRequest = 4,
                     HeightRequest = 4,
                     Margin = new Thickness(0, 6, 0, 0),
-                    BackgroundColor = this.Theme.Paragraph.ForegroundColor,
+                    BackgroundColor = Theme.Paragraph.ForegroundColor,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.Center,
                 };
@@ -241,39 +241,39 @@
             horizontalStack.Children.Add(bullet);
 
 
-            horizontalStack.Children.Add(this.stack);
+            horizontalStack.Children.Add(stack);
             initialStack.Children.Add(horizontalStack);
 
-            this.stack = initialStack;
+            stack = initialStack;
         }
 
-        private void Render(HeadingBlock block)
+        void Render(HeadingBlock block)
         {
             MarkdownStyle style;
 
             switch (block.Level)
             {
                 case 1:
-                    style = this.Theme.Heading1;
+                    style = Theme.Heading1;
                     break;
                 case 2:
-                    style = this.Theme.Heading2;
+                    style = Theme.Heading2;
                     break;
                 case 3:
-                    style = this.Theme.Heading3;
+                    style = Theme.Heading3;
                     break;
                 case 4:
-                    style = this.Theme.Heading4;
+                    style = Theme.Heading4;
                     break;
                 case 5:
-                    style = this.Theme.Heading5;
+                    style = Theme.Heading5;
                     break;
                 default:
-                    style = this.Theme.Heading6;
+                    style = Theme.Heading6;
                     break;
             }
 
-            var foregroundColor = isQuoted ? this.Theme.Quote.ForegroundColor : style.ForegroundColor;
+            var foregroundColor = isQuoted ? Theme.Quote.ForegroundColor : style.ForegroundColor;
 
             var label = new Label
             {
@@ -299,42 +299,42 @@
             }
         }
 
-        private void Render(ParagraphBlock block)
+        void Render(ParagraphBlock block)
         {
-            var style = this.Theme.Paragraph;
-            var foregroundColor = isQuoted ? this.Theme.Quote.ForegroundColor : style.ForegroundColor;
+            var style = Theme.Paragraph;
+            var foregroundColor = isQuoted ? Theme.Quote.ForegroundColor : style.ForegroundColor;
             var label = new Label
             {
                 FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
             };
             AttachLinks(label);
-            this.stack.Children.Add(label);
+            stack.Children.Add(label);
         }
 
-        private void Render(HtmlBlock block)
+        void Render(HtmlBlock block)
         {
             // ?
         }
 
-        private void Render(QuoteBlock block)
+        void Render(QuoteBlock block)
         {
-            var initialIsQuoted = this.isQuoted;
-            var initialStack = this.stack;
+            var initialIsQuoted = isQuoted;
+            var initialStack = stack;
 
-            this.isQuoted = true;
-            this.stack = new StackLayout()
+            isQuoted = true;
+            stack = new StackLayout()
             {
-                Spacing = this.Theme.Margin,
+                Spacing = Theme.Margin,
             };
 
-            var style = this.Theme.Quote;
+            var style = Theme.Quote;
 
             if (style.BorderSize > 0)
             {
                 var horizontalStack = new StackLayout()
                 {
                     Orientation = StackOrientation.Horizontal,
-                    BackgroundColor = this.Theme.Quote.BackgroundColor,
+                    BackgroundColor = Theme.Quote.BackgroundColor,
                 };
 
                 horizontalStack.Children.Add(new BoxView()
@@ -343,24 +343,24 @@
                     BackgroundColor = style.BorderColor,
                 });
 
-                horizontalStack.Children.Add(this.stack);
+                horizontalStack.Children.Add(stack);
                 initialStack.Children.Add(horizontalStack);
             }
             else
             {
-                stack.BackgroundColor = this.Theme.Quote.BackgroundColor;
-                initialStack.Children.Add(this.stack);
+                stack.BackgroundColor = Theme.Quote.BackgroundColor;
+                initialStack.Children.Add(stack);
             }
 
-            this.Render(block.AsEnumerable());
+            Render(block.AsEnumerable());
 
-            this.isQuoted = initialIsQuoted;
-            this.stack = initialStack;
+            isQuoted = initialIsQuoted;
+            stack = initialStack;
         }
 
-        private void Render(CodeBlock block)
+        void Render(CodeBlock block)
         {
-            var style = this.Theme.Code;
+            var style = Theme.Code;
             var label = new Label
             {
                 TextColor = style.ForegroundColor,
@@ -374,13 +374,13 @@
             {
                 CornerRadius = 3,
                 HasShadow = false,
-                Padding = this.Theme.Margin,
+                Padding = Theme.Margin,
                 BackgroundColor = style.BackgroundColor,
                 Content = label
             });
         }
 
-        private FormattedString CreateFormatted(ContainerInline inlines, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
+        FormattedString CreateFormatted(ContainerInline inlines, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
         {
             var fs = new FormattedString();
 
@@ -399,7 +399,7 @@
             return fs;
         }
 
-        private Span[] CreateSpans(Inline inline, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
+        Span[] CreateSpans(Inline inline, string family, FontAttributes attributes, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
         {
             switch (inline)
             {
@@ -431,14 +431,14 @@
 
                     if (!(url.StartsWith("http://") || url.StartsWith("https://")))
                     {
-                        url = $"{this.RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
+                        url = $"{RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
                     }
 
-                    if(link.IsImage)
+                    if (link.IsImage)
                     {
                         var image = new Image();
 
-                        if(Path.GetExtension(url) == ".svg")
+                        if (Path.GetExtension(url) == ".svg")
                         {
                             image.RenderSvg(url);
                         }
@@ -452,8 +452,8 @@
                     }
                     else
                     {
-                        var spans = link.SelectMany(x => CreateSpans(x, this.Theme.Link.FontFamily ?? family, this.Theme.Link.Attributes, this.Theme.Link.ForegroundColor, this.Theme.Link.BackgroundColor, size, lineHeight)).ToArray();
-                        links.Add(new KeyValuePair<string, string>(string.Join("",spans.Select(x => x.Text)), url));
+                        var spans = link.SelectMany(x => CreateSpans(x, Theme.Link.FontFamily ?? family, Theme.Link.Attributes, Theme.Link.ForegroundColor, Theme.Link.BackgroundColor, size, lineHeight)).ToArray();
+                        links.Add(new KeyValuePair<string, string>(string.Join("", spans.Select(x => x.Text)), url));
                         return spans;
                     }
 
@@ -464,26 +464,26 @@
                         {
                             Text="\u2002",
                             FontSize = size,
-                            FontFamily = this.Theme.Code.FontFamily,
-                            ForegroundColor = this.Theme.Code.ForegroundColor,
-                            BackgroundColor = this.Theme.Code.BackgroundColor
+                            FontFamily = Theme.Code.FontFamily,
+                            ForegroundColor = Theme.Code.ForegroundColor,
+                            BackgroundColor = Theme.Code.BackgroundColor
                         },
                         new Span
                         {
                             Text = code.Content,
-                            FontAttributes = this.Theme.Code.Attributes,
+                            FontAttributes = Theme.Code.Attributes,
                             FontSize = size,
-                            FontFamily = this.Theme.Code.FontFamily,
-                            ForegroundColor = this.Theme.Code.ForegroundColor,
-                            BackgroundColor = this.Theme.Code.BackgroundColor
+                            FontFamily = Theme.Code.FontFamily,
+                            ForegroundColor = Theme.Code.ForegroundColor,
+                            BackgroundColor = Theme.Code.BackgroundColor
                         },
                         new Span()
                         {
                             Text="\u2002",
                             FontSize = size,
-                            FontFamily = this.Theme.Code.FontFamily,
-                            ForegroundColor = this.Theme.Code.ForegroundColor,
-                            BackgroundColor = this.Theme.Code.BackgroundColor
+                            FontFamily = Theme.Code.FontFamily,
+                            ForegroundColor = Theme.Code.ForegroundColor,
+                            BackgroundColor = Theme.Code.BackgroundColor
                         },
                     };
 

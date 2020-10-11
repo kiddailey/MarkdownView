@@ -1,9 +1,9 @@
-﻿using Xamarin.Forms;
-using System.Net;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Xam.Forms.Markdown;
-using System.Diagnostics;
+using Xamarin.Forms;
 
 namespace MarkdownView.Samples
 {
@@ -17,15 +17,16 @@ namespace MarkdownView.Samples
             var mdView = new Xam.Forms.Markdown.MarkdownView();
             mdView.Markdown = embedded;
             mdView.RelativeUrlHost = "";
-            this.Content = new ScrollView() { Content = mdView };
+            Content = new ScrollView() { Content = mdView };
 
             MessagingCenter.Subscribe<MenuPage, string>(this, "theme", (s, arg) =>
             {
                 mdView.Theme = arg == "dark" ? (MarkdownTheme)new DarkMarkdownTheme() : new LightMarkdownTheme();
             });
 
-            MessagingCenter.Subscribe<MenuPage, string>(this, "new_md", async (s, arg) => {
-                if(arg == "")
+            MessagingCenter.Subscribe<MenuPage, string>(this, "new_md", async (s, arg) =>
+            {
+                if (arg == "")
                 {
                     mdView.Markdown = embedded;
                     mdView.RelativeUrlHost = "";

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace MarkdownView.Samples
 {
@@ -11,8 +8,8 @@ namespace MarkdownView.Samples
         {
             public Item(string title, string url)
             {
-                this.Title = title;
-                this.Url = url;
+                Title = title;
+                Url = url;
             }
             public string Title { get; }
 
@@ -30,7 +27,7 @@ namespace MarkdownView.Samples
         public MenuPage()
         {
             InitializeComponent();
-            this.BindingContext = this;
+            BindingContext = this;
         }
 
         void Handle_Toggled(object sender, Xamarin.Forms.ToggledEventArgs e)
