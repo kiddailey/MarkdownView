@@ -8,7 +8,7 @@
 
         public float FontSize { get; set; } = 12;
         
-        public float LineHeight { get; set; } = 1;
+        public float LineHeight { get; set; } = -1;
 
         public Color ForegroundColor { get; set; } = Color.Black;
 
