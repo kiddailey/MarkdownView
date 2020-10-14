@@ -161,8 +161,6 @@
             }
         }
 
-        int listScope;
-
         void Render(ThematicBreakBlock block)
         {
             var style = Theme.Separator;
@@ -179,8 +177,6 @@
 
         void Render(ListBlock block)
         {
-            listScope++;
-
             for (var i = 0; i < block.Count(); i++)
             {
                 var item = block.ElementAt(i);
@@ -190,8 +186,6 @@
                     Render(block, i + 1, itemBlock);
                 }
             }
-
-            listScope--;
         }
 
         void Render(ListBlock parent, int index, ListItemBlock block)
@@ -208,7 +202,7 @@
             var horizontalStack = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                Margin = new Thickness(listScope * Theme.Margin, 0, 0, 0),
+                Margin = new Thickness(block.Column * Theme.ListIndentation, 0, 0, 0),
             };
 
             View bullet;

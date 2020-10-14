@@ -114,6 +114,8 @@ namespace Xam.Forms.Markdown
         public MarkdownStyle Code { get; set; }
 
         public float Margin { get; set; } = 10;
+
+        public float ListIndentation { get; set; } = 10;
     }
 
     public class LightMarkdownTheme : MarkdownTheme
