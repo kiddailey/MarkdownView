@@ -76,6 +76,20 @@ namespace Xam.Forms.Markdown
                 BorderSize = 2,
             };
 
+            OrderedList = new ListStyle
+            {
+                BulletStyleType = ListStyleType.Decimal,
+                BulletVerticalOptions = LayoutOptions.Start,
+                ItemVerticalOptions = LayoutOptions.Start,
+            };
+
+            UnorderedList = new ListStyle
+            {
+                BulletStyleType = ListStyleType.Square,
+                BulletVerticalOptions = LayoutOptions.Center,
+                ItemVerticalOptions = LayoutOptions.Center,
+            };
+
             // Platform specific properties
             switch (Device.RuntimePlatform)
             {
@@ -113,9 +127,12 @@ namespace Xam.Forms.Markdown
 
         public MarkdownStyle Code { get; set; }
 
+        public ListStyle OrderedList { get; set; }
+
+        public ListStyle UnorderedList { get; set; }
+
         public float Margin { get; set; } = 10;
 
-        public float ListIndentation { get; set; } = 10;
     }
 
     public class LightMarkdownTheme : MarkdownTheme

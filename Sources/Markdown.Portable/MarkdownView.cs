@@ -192,53 +192,94 @@
         {
             var initialStack = stack;
 
+            var listTheme = parent.IsOrdered ? Theme.OrderedList : Theme.UnorderedList;
+
             stack = new StackLayout()
             {
-                Spacing = Theme.Margin,
+                Spacing = 0,
+                VerticalOptions = listTheme.ItemVerticalOptions,
             };
 
             Render(block.AsEnumerable());
+            Grid.SetColumn(stack, 1);
 
-            var horizontalStack = new StackLayout
+            var horizontalStack = new Grid
             {
-                Orientation = StackOrientation.Horizontal,
-                Margin = new Thickness(block.Column * Theme.ListIndentation, 0, 0, 0),
+                ColumnDefinitions = new ColumnDefinitionCollection {
+                    new ColumnDefinition() { Width = GridLength.Auto },
+                    new ColumnDefinition() { Width = GridLength.Star },
+                },
+                ColumnSpacing = listTheme.Spacing ?? Theme.Margin,
+                RowSpacing = 0,
+                Margin = new Thickness(block.Column * listTheme.Indentation, 0, 0, 0),
             };
 
-            View bullet;
-
-            if (parent.IsOrdered)
+            if (listTheme.BulletStyleType == ListStyleType.None)
             {
-                bullet = new Label
-                {
-                    Text = $"{index}.",
-                    FontSize = Theme.Paragraph.FontSize,
-                    TextColor = Theme.Paragraph.ForegroundColor,
-                    VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.End,
-                    LineHeight = Theme.Paragraph.LineHeight,
-                };
-            }
-            else
-            {
-                bullet = new BoxView
-                {
-                    WidthRequest = 4,
-                    HeightRequest = 4,
-                    Margin = new Thickness(0, 6, 0, 0),
-                    BackgroundColor = Theme.Paragraph.ForegroundColor,
-                    VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.Center,
-                };
+                horizontalStack.ColumnSpacing = 0;
             }
 
-            horizontalStack.Children.Add(bullet);
+            var bullet = GetListBullet(listTheme, index, parent, block);
 
+            if (bullet != null)
+            {
+                Grid.SetColumn(bullet, 0);
+                horizontalStack.Children.Add(bullet);
+            }
 
             horizontalStack.Children.Add(stack);
             initialStack.Children.Add(horizontalStack);
 
             stack = initialStack;
+        }
+
+        View GetListBullet(ListStyle listTheme, int index, ListBlock parent, ListItemBlock block)
+        {
+
+            if (listTheme.BulletStyleType == ListStyleType.None)
+            {
+                return null;
+            }
+
+            if (listTheme.BulletStyleType == ListStyleType.Custom)
+            {
+                return listTheme.CustomCallback?.Invoke(index, parent, block);
+            }
+
+            if (listTheme.BulletStyleType == ListStyleType.Decimal || listTheme.BulletStyleType == ListStyleType.Symbol)
+            {
+                return new Label
+                {
+                    Text = listTheme.BulletStyleType == ListStyleType.Symbol ? listTheme.Symbol : $"{index}.",
+                    FontSize = listTheme.BulletFontSize ?? Theme.Paragraph.FontSize,
+                    TextColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
+                    LineHeight = listTheme.BulletLineHeight ?? Theme.Paragraph.LineHeight,
+                    FontAttributes = listTheme.BulletFontAttributes,
+                    VerticalOptions = listTheme.BulletVerticalOptions,
+                };
+            }
+            else if (listTheme.BulletStyleType == ListStyleType.Square || listTheme.BulletStyleType == ListStyleType.Circle)
+            {
+                var bullet = new Frame
+                {
+                    WidthRequest = listTheme.BulletSize,
+                    HeightRequest = listTheme.BulletSize,
+                    BackgroundColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
+                    Padding = 0,
+                    HasShadow = false,
+                    VerticalOptions = listTheme.BulletVerticalOptions,
+                    CornerRadius = 0,
+                };
+
+                if (listTheme.BulletStyleType == ListStyleType.Circle)
+                {
+                    bullet.CornerRadius = listTheme.BulletSize / 2;
+                }
+
+                return bullet;
+            }
+
+            return null;
         }
 
         void Render(HeadingBlock block)
