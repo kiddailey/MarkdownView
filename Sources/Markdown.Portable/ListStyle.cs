@@ -8,6 +8,7 @@ namespace Xam.Forms.Markdown
     {
         public float Indentation { get; set; } = 10;
         public float? Spacing { get; set; }
+        public Thickness ListMargin { get; set; } = new Thickness(0);
         public ListStyleType BulletStyleType { get; set; }
         public int BulletSize { get; set; } = 4;
         public float? BulletFontSize { get; set; }

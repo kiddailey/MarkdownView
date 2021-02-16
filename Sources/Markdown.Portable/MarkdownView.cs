@@ -177,18 +177,19 @@
 
         void Render(ListBlock block)
         {
-            for (var i = 0; i < block.Count(); i++)
+            var itemsCount = block.Count();
+            for (var i = 0; i < itemsCount; i++)
             {
                 var item = block.ElementAt(i);
 
                 if (item is ListItemBlock itemBlock)
-                {
-                    Render(block, i + 1, itemBlock);
+                { 
+                    Render(block, i + 1, itemBlock, isFirstItem: i == 0, isLastItem: i + 1 == itemsCount);
                 }
             }
         }
 
-        void Render(ListBlock parent, int index, ListItemBlock block)
+        void Render(ListBlock parent, int index, ListItemBlock block, bool isFirstItem, bool isLastItem)
         {
             var initialStack = stack;
 
@@ -203,6 +204,19 @@
             Render(block.AsEnumerable());
             Grid.SetColumn(stack, 1);
 
+            var itemMargin = new Thickness(listTheme.ListMargin.Left, 0, listTheme.ListMargin.Right, 0);
+            if (isFirstItem)
+            {
+                itemMargin.Top = listTheme.ListMargin.Top;
+            }
+
+            if (isLastItem)
+            {
+                itemMargin.Bottom = listTheme.ListMargin.Bottom;
+            }
+
+            itemMargin.Left += block.Column * listTheme.Indentation;
+
             var horizontalStack = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection {
@@ -211,7 +225,7 @@
                 },
                 ColumnSpacing = listTheme.Spacing ?? Theme.Margin,
                 RowSpacing = 0,
-                Margin = new Thickness(block.Column * listTheme.Indentation, 0, 0, 0),
+                Margin = itemMargin,
             };
 
             if (listTheme.BulletStyleType == ListStyleType.None)

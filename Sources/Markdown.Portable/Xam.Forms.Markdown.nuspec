@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xam.Forms.Markdown</id>
-    <version>1.1.0-pre2</version>
+    <version>1.1.0-pre3 </version>
     <title>Xam.Forms.Markdown</title>
     <authors>bares43</authors>
     <owners>bares43</owners>
@@ -10,10 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Native markdown rendering for Xamarin.Forms.</description>
     <releaseNotes>
-      - Reworked rendering of lists
-      - Various bullet types (including custom view)
-      - Bullet size, color, font attributes
-      - Spacing (space between bullet and content of list item) and align
+      - List margin
     </releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>xamarin ios android md markdown native xamarin.forms</tags>
