@@ -58,7 +58,7 @@
         {
             stack = new StackLayout()
             {
-                Spacing = Theme.Margin,
+                Spacing = Theme.VerticalSpacing,
             };
 
             Padding = Theme.Margin;
@@ -177,6 +177,16 @@
 
         void Render(ListBlock block)
         {
+            var listTheme = block.IsOrdered ? Theme.OrderedList : Theme.UnorderedList;
+
+            var initialStack = stack;
+
+            stack = new StackLayout()
+            {
+                Spacing = listTheme.ItemsVerticalSpacing,
+                Margin = listTheme.ListMargin,
+            };
+
             var itemsCount = block.Count();
             for (var i = 0; i < itemsCount; i++)
             {
@@ -184,16 +194,19 @@
 
                 if (item is ListItemBlock itemBlock)
                 { 
-                    Render(block, i + 1, itemBlock, isFirstItem: i == 0, isLastItem: i + 1 == itemsCount);
+                    Render(block, listTheme, i + 1, itemBlock);
                 }
             }
+
+            initialStack.Children.Add(stack);
+
+            stack = initialStack;
+
         }
 
-        void Render(ListBlock parent, int index, ListItemBlock block, bool isFirstItem, bool isLastItem)
+        void Render(ListBlock parent, ListStyle listTheme, int index, ListItemBlock block)
         {
             var initialStack = stack;
-
-            var listTheme = parent.IsOrdered ? Theme.OrderedList : Theme.UnorderedList;
 
             stack = new StackLayout()
             {
@@ -204,19 +217,6 @@
             Render(block.AsEnumerable());
             Grid.SetColumn(stack, 1);
 
-            var itemMargin = new Thickness(listTheme.ListMargin.Left, 0, listTheme.ListMargin.Right, 0);
-            if (isFirstItem)
-            {
-                itemMargin.Top = listTheme.ListMargin.Top;
-            }
-
-            if (isLastItem)
-            {
-                itemMargin.Bottom = listTheme.ListMargin.Bottom;
-            }
-
-            itemMargin.Left += block.Column * listTheme.Indentation;
-
             var horizontalStack = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection {
@@ -225,7 +225,7 @@
                 },
                 ColumnSpacing = listTheme.Spacing ?? Theme.Margin,
                 RowSpacing = 0,
-                Margin = itemMargin,
+                Margin = new Thickness(block.Column * listTheme.Indentation, 0, 0, 0),
             };
 
             if (listTheme.BulletStyleType == ListStyleType.None)
@@ -373,7 +373,7 @@
             isQuoted = true;
             stack = new StackLayout()
             {
-                Spacing = Theme.Margin,
+                Spacing = Theme.VerticalSpacing,
             };
 
             var style = Theme.Quote;

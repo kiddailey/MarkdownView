@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xam.Forms.Markdown</id>
-    <version>1.1.0-pre3 </version>
+    <version>1.1.0-pre4 </version>
     <title>Xam.Forms.Markdown</title>
     <authors>bares43</authors>
     <owners>bares43</owners>
@@ -10,7 +10,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Native markdown rendering for Xamarin.Forms.</description>
     <releaseNotes>
-      - List margin
+      - Vertical spacing of items
+      - Vertical spacing of list items
+      - Rewritten list margins
     </releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>xamarin ios android md markdown native xamarin.forms</tags>

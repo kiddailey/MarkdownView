@@ -133,6 +133,8 @@ namespace Xam.Forms.Markdown
 
         public float Margin { get; set; } = 10;
 
+        public float VerticalSpacing { get; set; } = 10;
+
     }
 
     public class LightMarkdownTheme : MarkdownTheme
