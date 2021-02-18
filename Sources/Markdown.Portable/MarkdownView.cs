@@ -86,23 +86,31 @@
         {
             if (links.Any())
             {
-                var blockLinks = links;
+                var blockLinks = links.Select(o => new LinkData { Text = o.Key, Link = o.Value }).ToList();
                 view.GestureRecognizers.Add(new TapGestureRecognizer
                 {
                     Command = new Command(async () =>
                     {
                         try
                         {
-                            if (blockLinks.Count > 1)
+                            if (Theme.Link.CustomTapHandler != null)
                             {
-                                var result = await Application.Current.MainPage.DisplayActionSheet("Open link", "Cancel", null, blockLinks.Select(x => x.Key).ToArray());
-                                var link = blockLinks.FirstOrDefault(x => x.Key == result);
-                                NavigateToLink(link.Value);
+                                Theme.Link.CustomTapHandler.Invoke(blockLinks);
                             }
                             else
                             {
-                                NavigateToLink(blockLinks.First().Value);
+                                if (blockLinks.Count > 1)
+                                {
+                                    var result = await Application.Current.MainPage.DisplayActionSheet(Theme.Link.OpenLinkSheetTitle, Theme.Link.OpenLinkSheetCancel, null, blockLinks.Select(x => x.Text).ToArray());
+                                    var link = blockLinks.FirstOrDefault(x => x.Text == result);
+                                    NavigateToLink(link.Link);
+                                }
+                                else
+                                {
+                                    NavigateToLink(blockLinks.First().Link);
+                                }
                             }
+
                         }
                         catch (Exception) { }
                     }),

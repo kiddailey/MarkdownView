@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xam.Forms.Markdown</id>
-    <version>1.1.0-pre4 </version>
+    <version>1.1.0-pre5</version>
     <title>Xam.Forms.Markdown</title>
     <authors>bares43</authors>
     <owners>bares43</owners>
@@ -10,9 +10,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Native markdown rendering for Xamarin.Forms.</description>
     <releaseNotes>
-      - Vertical spacing of items
-      - Vertical spacing of list items
-      - Rewritten list margins
+      - LinkStyle:
+      - Possibility to change texts in action sheet in default tap handler
+      - Custom tap handler for links
     </releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>xamarin ios android md markdown native xamarin.forms</tags>

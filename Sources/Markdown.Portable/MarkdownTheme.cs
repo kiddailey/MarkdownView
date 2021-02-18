@@ -51,7 +51,7 @@ namespace Xam.Forms.Markdown
                 FontSize = 14,
             };
 
-            Link = new MarkdownStyle
+            Link = new LinkStyle
             {
                 Attributes = FontAttributes.None,
                 FontSize = 12,
@@ -123,7 +123,7 @@ namespace Xam.Forms.Markdown
 
         public MarkdownStyle Separator { get; set; }
 
-        public MarkdownStyle Link { get; set; }
+        public LinkStyle Link { get; set; }
 
         public MarkdownStyle Code { get; set; }
 
