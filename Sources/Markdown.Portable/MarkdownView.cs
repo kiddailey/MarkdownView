@@ -335,6 +335,8 @@
             var label = new Label
             {
                 FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
+                HorizontalTextAlignment = style.HorizontalTextAlignment,
+                VerticalTextAlignment = style.VerticalTextAlignment,
             };
 
             AttachLinks(label);
@@ -363,6 +365,8 @@
             var label = new Label
             {
                 FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
+                HorizontalTextAlignment = style.HorizontalTextAlignment,
+                VerticalTextAlignment = style.VerticalTextAlignment,
             };
             AttachLinks(label);
             stack.Children.Add(label);
@@ -426,6 +430,8 @@
                 FontSize = style.FontSize,
                 Text = string.Join(Environment.NewLine, block.Lines),
                 LineHeight = style.LineHeight,
+                HorizontalTextAlignment = style.HorizontalTextAlignment,
+                VerticalTextAlignment = style.VerticalTextAlignment,
             };
             stack.Children.Add(new Frame()
             {
