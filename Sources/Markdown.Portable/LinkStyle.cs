@@ -10,6 +10,7 @@ namespace Xam.Forms.Markdown
         public string OpenLinkSheetTitle { get; set; } = "Open link";
         public string OpenLinkSheetCancel { get; set; } = "Cancel";
         public Action<List<LinkData>> CustomTapHandler { get; set; }
+        public List<string> ExternalProtocols = new List<string> { "http://", "https://", "mailto:", "tel:" };
     }
 
     public class LinkData

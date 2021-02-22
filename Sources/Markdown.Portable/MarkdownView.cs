@@ -492,7 +492,7 @@
 
                     var url = link.Url;
 
-                    if (!(url.StartsWith("http://") || url.StartsWith("https://")))
+                    if (!Theme.Link.ExternalProtocols.Any(o => url.StartsWith(o)))
                     {
                         url = $"{RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
                     }
