@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Xam.Forms.Markdown</id>
-    <version>1.1.0-pre5</version>
+    <version>1.1.0-pre6</version>
     <title>Xam.Forms.Markdown</title>
     <authors>bares43</authors>
     <owners>bares43</owners>
@@ -10,11 +10,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Native markdown rendering for Xamarin.Forms.</description>
     <releaseNotes>
-      - LinkStyle:
-      - Possibility to change texts in action sheet in default tap handler
-      - Custom tap handler for links
+      https://github.com/bares43/MarkdownView/blob/dev/CHANGELOG.md
     </releaseNotes>
-    <copyright>Copyright 2020</copyright>
+    <copyright>Copyright 2021</copyright>
     <tags>xamarin ios android md markdown native xamarin.forms</tags>
   </metadata>
 </package>

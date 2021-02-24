@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0-pre6 - 2021-02-24
 
 ### Added 
 - `HorizontalTextAlignment` and `VerticalTextAlignment` for Heading, Paragraph and Code
