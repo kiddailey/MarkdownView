@@ -450,12 +450,9 @@
             foreach (var inline in inlines)
             {
                 var spans = CreateSpans(inline, family, attributes, foregroundColor, backgroundColor, size, lineHeight);
-                if (spans != null)
+                foreach (var span in spans)
                 {
-                    foreach (var span in spans)
-                    {
-                        fs.Spans.Add(span);
-                    }
+                    fs.Spans.Add(span);
                 }
             }
 
@@ -552,7 +549,7 @@
 
                 default:
                     Debug.WriteLine($"Can't render {inline.GetType()} inlines.");
-                    return null;
+                    return new Span[0];
             }
         }
 

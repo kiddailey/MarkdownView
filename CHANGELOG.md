@@ -6,6 +6,9 @@
 - `HorizontalTextAlignment` and `VerticalTextAlignment` for Heading, Paragraph and Code
 - Added `ExternalProtocols` to `LinkStyle` which defines link protocols which can be opened by default tap handler (default are: http://, https://, mailto:, tel:)
 
+### Fixed
+- `CreateSpans` returns `Span[0]` instead of `null` for unknown type, which solves `NullReferenceException`
+
 ## 1.1.0-pre5 - 2021-02-18
 
 ### Added
