@@ -9,6 +9,9 @@
 ### Fixed
 - `CreateSpans` returns `Span[0]` instead of `null` for unknown type, which solves `NullReferenceException`
 
+### Changed
+- `LinkStyle.CustomCallback` renamed to `LinkStyle.CustomTapHandler`
+
 ## 1.1.0-pre5 - 2021-02-18
 
 ### Added
