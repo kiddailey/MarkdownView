@@ -201,7 +201,7 @@
                 var item = block.ElementAt(i);
 
                 if (item is ListItemBlock itemBlock)
-                { 
+                {
                     Render(block, listTheme, i + 1, itemBlock);
                 }
             }
@@ -517,6 +517,10 @@
                         return spans;
                     }
 
+                case AutolinkInline autolink:
+
+                    return RenderAutolink(autolink, size, lineHeight, family);
+
                 case CodeInline code:
                     return new[]
                     {
@@ -551,6 +555,33 @@
                     Debug.WriteLine($"Can't render {inline.GetType()} inlines.");
                     return new Span[0];
             }
+        }
+
+        Span[] RenderAutolink(AutolinkInline autolink, float fontSize, float lineHeight, string fontFamily)
+        {
+            var url = autolink.Url;
+
+            if (autolink.IsEmail && !url.ToLower().StartsWith("mailto:"))
+            {
+                url = $"mailto:{url}";
+            }
+
+            links.Add(new KeyValuePair<string, string>(autolink.Url, url));
+
+            var styles = Theme.Link;
+
+            return new[] {
+                new Span
+                {
+                    Text = autolink.Url,
+                    FontAttributes = styles.Attributes,
+                    ForegroundColor = styles.ForegroundColor,
+                    BackgroundColor = styles.BackgroundColor,
+                    FontSize = fontSize,
+                    FontFamily = Theme.Link.FontFamily ?? fontFamily,
+                    LineHeight = lineHeight,
+                }
+            };
         }
 
         #endregion

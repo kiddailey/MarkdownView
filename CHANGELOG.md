@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added 
+- Support for autolinks (https://spec.commonmark.org/0.29/#autolinks)
+  - Autolinks are rendered the same way as regular links.
+
 ## 1.1.0-pre6 - 2021-02-24
 
 ### Added 
