@@ -19,5 +19,8 @@
         public float BorderSize { get; set; }
 
         public string FontFamily { get; set; }
+
+        public TextAlignment HorizontalTextAlignment { get; set; } = TextAlignment.Start;
+        public TextAlignment VerticalTextAlignment { get; set; } = TextAlignment.Center;
     }
 }

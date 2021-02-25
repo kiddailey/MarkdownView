@@ -58,7 +58,7 @@
         {
             stack = new StackLayout()
             {
-                Spacing = Theme.Margin,
+                Spacing = Theme.VerticalSpacing,
             };
 
             Padding = Theme.Margin;
@@ -86,23 +86,31 @@
         {
             if (links.Any())
             {
-                var blockLinks = links;
+                var blockLinks = links.Select(o => new LinkData { Text = o.Key, Link = o.Value }).ToList();
                 view.GestureRecognizers.Add(new TapGestureRecognizer
                 {
                     Command = new Command(async () =>
                     {
                         try
                         {
-                            if (blockLinks.Count > 1)
+                            if (Theme.Link.CustomTapHandler != null)
                             {
-                                var result = await Application.Current.MainPage.DisplayActionSheet("Open link", "Cancel", null, blockLinks.Select(x => x.Key).ToArray());
-                                var link = blockLinks.FirstOrDefault(x => x.Key == result);
-                                NavigateToLink(link.Value);
+                                Theme.Link.CustomTapHandler.Invoke(blockLinks);
                             }
                             else
                             {
-                                NavigateToLink(blockLinks.First().Value);
+                                if (blockLinks.Count > 1)
+                                {
+                                    var result = await Application.Current.MainPage.DisplayActionSheet(Theme.Link.OpenLinkSheetTitle, Theme.Link.OpenLinkSheetCancel, null, blockLinks.Select(x => x.Text).ToArray());
+                                    var link = blockLinks.FirstOrDefault(x => x.Text == result);
+                                    NavigateToLink(link.Link);
+                                }
+                                else
+                                {
+                                    NavigateToLink(blockLinks.First().Link);
+                                }
                             }
+
                         }
                         catch (Exception) { }
                     }),
@@ -161,8 +169,6 @@
             }
         }
 
-        int listScope;
-
         void Render(ThematicBreakBlock block)
         {
             var style = Theme.Separator;
@@ -179,72 +185,123 @@
 
         void Render(ListBlock block)
         {
-            listScope++;
+            var listTheme = block.IsOrdered ? Theme.OrderedList : Theme.UnorderedList;
 
-            for (var i = 0; i < block.Count(); i++)
+            var initialStack = stack;
+
+            stack = new StackLayout()
+            {
+                Spacing = listTheme.ItemsVerticalSpacing,
+                Margin = listTheme.ListMargin,
+            };
+
+            var itemsCount = block.Count();
+            for (var i = 0; i < itemsCount; i++)
             {
                 var item = block.ElementAt(i);
 
                 if (item is ListItemBlock itemBlock)
                 {
-                    Render(block, i + 1, itemBlock);
+                    Render(block, listTheme, i + 1, itemBlock);
                 }
             }
 
-            listScope--;
+            initialStack.Children.Add(stack);
+
+            stack = initialStack;
+
         }
 
-        void Render(ListBlock parent, int index, ListItemBlock block)
+        void Render(ListBlock parent, ListStyle listTheme, int index, ListItemBlock block)
         {
             var initialStack = stack;
 
             stack = new StackLayout()
             {
-                Spacing = Theme.Margin,
+                Spacing = 0,
+                VerticalOptions = listTheme.ItemVerticalOptions,
             };
 
             Render(block.AsEnumerable());
+            Grid.SetColumn(stack, 1);
 
-            var horizontalStack = new StackLayout
+            var horizontalStack = new Grid
             {
-                Orientation = StackOrientation.Horizontal,
-                Margin = new Thickness(listScope * Theme.Margin, 0, 0, 0),
+                ColumnDefinitions = new ColumnDefinitionCollection {
+                    new ColumnDefinition() { Width = GridLength.Auto },
+                    new ColumnDefinition() { Width = GridLength.Star },
+                },
+                ColumnSpacing = listTheme.Spacing ?? Theme.Margin,
+                RowSpacing = 0,
+                Margin = new Thickness(block.Column * listTheme.Indentation, 0, 0, 0),
             };
 
-            View bullet;
-
-            if (parent.IsOrdered)
+            if (listTheme.BulletStyleType == ListStyleType.None)
             {
-                bullet = new Label
-                {
-                    Text = $"{index}.",
-                    FontSize = Theme.Paragraph.FontSize,
-                    TextColor = Theme.Paragraph.ForegroundColor,
-                    VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.End,
-                    LineHeight = Theme.Paragraph.LineHeight,
-                };
-            }
-            else
-            {
-                bullet = new BoxView
-                {
-                    WidthRequest = 4,
-                    HeightRequest = 4,
-                    Margin = new Thickness(0, 6, 0, 0),
-                    BackgroundColor = Theme.Paragraph.ForegroundColor,
-                    VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.Center,
-                };
+                horizontalStack.ColumnSpacing = 0;
             }
 
-            horizontalStack.Children.Add(bullet);
+            var bullet = GetListBullet(listTheme, index, parent, block);
 
+            if (bullet != null)
+            {
+                Grid.SetColumn(bullet, 0);
+                horizontalStack.Children.Add(bullet);
+            }
 
             horizontalStack.Children.Add(stack);
             initialStack.Children.Add(horizontalStack);
 
             stack = initialStack;
+        }
+
+        View GetListBullet(ListStyle listTheme, int index, ListBlock parent, ListItemBlock block)
+        {
+
+            if (listTheme.BulletStyleType == ListStyleType.None)
+            {
+                return null;
+            }
+
+            if (listTheme.BulletStyleType == ListStyleType.Custom)
+            {
+                return listTheme.CustomCallback?.Invoke(index, parent, block);
+            }
+
+            if (listTheme.BulletStyleType == ListStyleType.Decimal || listTheme.BulletStyleType == ListStyleType.Symbol)
+            {
+                return new Label
+                {
+                    Text = listTheme.BulletStyleType == ListStyleType.Symbol ? listTheme.Symbol : $"{index}.",
+                    FontSize = listTheme.BulletFontSize ?? Theme.Paragraph.FontSize,
+                    TextColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
+                    LineHeight = listTheme.BulletLineHeight ?? Theme.Paragraph.LineHeight,
+                    FontAttributes = listTheme.BulletFontAttributes,
+                    VerticalOptions = listTheme.BulletVerticalOptions,
+                };
+            }
+            else if (listTheme.BulletStyleType == ListStyleType.Square || listTheme.BulletStyleType == ListStyleType.Circle)
+            {
+                var bullet = new Frame
+                {
+                    WidthRequest = listTheme.BulletSize,
+                    HeightRequest = listTheme.BulletSize,
+                    BackgroundColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
+                    Padding = 0,
+                    HasShadow = false,
+                    VerticalOptions = listTheme.BulletVerticalOptions,
+                    CornerRadius = 0,
+                };
+
+                if (listTheme.BulletStyleType == ListStyleType.Circle)
+                {
+                    bullet.CornerRadius = listTheme.BulletSize / 2;
+                }
+
+                return bullet;
+            }
+
+            return null;
         }
 
         void Render(HeadingBlock block)
@@ -278,6 +335,8 @@
             var label = new Label
             {
                 FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
+                HorizontalTextAlignment = style.HorizontalTextAlignment,
+                VerticalTextAlignment = style.VerticalTextAlignment,
             };
 
             AttachLinks(label);
@@ -306,6 +365,8 @@
             var label = new Label
             {
                 FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
+                HorizontalTextAlignment = style.HorizontalTextAlignment,
+                VerticalTextAlignment = style.VerticalTextAlignment,
             };
             AttachLinks(label);
             stack.Children.Add(label);
@@ -324,7 +385,7 @@
             isQuoted = true;
             stack = new StackLayout()
             {
-                Spacing = Theme.Margin,
+                Spacing = Theme.VerticalSpacing,
             };
 
             var style = Theme.Quote;
@@ -369,6 +430,8 @@
                 FontSize = style.FontSize,
                 Text = string.Join(Environment.NewLine, block.Lines),
                 LineHeight = style.LineHeight,
+                HorizontalTextAlignment = style.HorizontalTextAlignment,
+                VerticalTextAlignment = style.VerticalTextAlignment,
             };
             stack.Children.Add(new Frame()
             {
@@ -387,12 +450,9 @@
             foreach (var inline in inlines)
             {
                 var spans = CreateSpans(inline, family, attributes, foregroundColor, backgroundColor, size, lineHeight);
-                if (spans != null)
+                foreach (var span in spans)
                 {
-                    foreach (var span in spans)
-                    {
-                        fs.Spans.Add(span);
-                    }
+                    fs.Spans.Add(span);
                 }
             }
 
@@ -429,7 +489,7 @@
 
                     var url = link.Url;
 
-                    if (!(url.StartsWith("http://") || url.StartsWith("https://")))
+                    if (!Theme.Link.ExternalProtocols.Any(o => url.StartsWith(o)))
                     {
                         url = $"{RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
                     }
@@ -456,6 +516,10 @@
                         links.Add(new KeyValuePair<string, string>(string.Join("", spans.Select(x => x.Text)), url));
                         return spans;
                     }
+
+                case AutolinkInline autolink:
+
+                    return RenderAutolink(autolink, size, lineHeight, family);
 
                 case CodeInline code:
                     return new[]
@@ -489,8 +553,35 @@
 
                 default:
                     Debug.WriteLine($"Can't render {inline.GetType()} inlines.");
-                    return null;
+                    return new Span[0];
             }
+        }
+
+        Span[] RenderAutolink(AutolinkInline autolink, float fontSize, float lineHeight, string fontFamily)
+        {
+            var url = autolink.Url;
+
+            if (autolink.IsEmail && !url.ToLower().StartsWith("mailto:"))
+            {
+                url = $"mailto:{url}";
+            }
+
+            links.Add(new KeyValuePair<string, string>(autolink.Url, url));
+
+            var styles = Theme.Link;
+
+            return new[] {
+                new Span
+                {
+                    Text = autolink.Url,
+                    FontAttributes = styles.Attributes,
+                    ForegroundColor = styles.ForegroundColor,
+                    BackgroundColor = styles.BackgroundColor,
+                    FontSize = fontSize,
+                    FontFamily = Theme.Link.FontFamily ?? fontFamily,
+                    LineHeight = lineHeight,
+                }
+            };
         }
 
         #endregion

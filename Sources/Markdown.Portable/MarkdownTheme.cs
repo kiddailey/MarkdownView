@@ -51,7 +51,7 @@ namespace Xam.Forms.Markdown
                 FontSize = 14,
             };
 
-            Link = new MarkdownStyle
+            Link = new LinkStyle
             {
                 Attributes = FontAttributes.None,
                 FontSize = 12,
@@ -74,6 +74,20 @@ namespace Xam.Forms.Markdown
             Separator = new MarkdownStyle
             {
                 BorderSize = 2,
+            };
+
+            OrderedList = new ListStyle
+            {
+                BulletStyleType = ListStyleType.Decimal,
+                BulletVerticalOptions = LayoutOptions.Start,
+                ItemVerticalOptions = LayoutOptions.Start,
+            };
+
+            UnorderedList = new ListStyle
+            {
+                BulletStyleType = ListStyleType.Square,
+                BulletVerticalOptions = LayoutOptions.Center,
+                ItemVerticalOptions = LayoutOptions.Center,
             };
 
             // Platform specific properties
@@ -109,11 +123,18 @@ namespace Xam.Forms.Markdown
 
         public MarkdownStyle Separator { get; set; }
 
-        public MarkdownStyle Link { get; set; }
+        public LinkStyle Link { get; set; }
 
         public MarkdownStyle Code { get; set; }
 
+        public ListStyle OrderedList { get; set; }
+
+        public ListStyle UnorderedList { get; set; }
+
         public float Margin { get; set; } = 10;
+
+        public float VerticalSpacing { get; set; } = 10;
+
     }
 
     public class LightMarkdownTheme : MarkdownTheme
