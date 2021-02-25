@@ -2,13 +2,13 @@
 <package >
   <metadata>
     <id>Xam.Forms.Markdown</id>
-    <version>1.1.0-pre6</version>
+    <version>1.1.0</version>
     <title>Xam.Forms.Markdown</title>
     <authors>bares43</authors>
     <owners>bares43</owners>
     <projectUrl>https://github.com/bares43/MarkdownView</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Native markdown rendering for Xamarin.Forms.</description>
+    <description>Actively developed (2021) native markdown rendering for Xamarin.Forms.</description>
     <releaseNotes>
       https://github.com/bares43/MarkdownView/blob/dev/CHANGELOG.md
     </releaseNotes>
