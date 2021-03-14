@@ -8,6 +8,7 @@
     using System.Net;
     using System.Text.RegularExpressions;
     using Extensions;
+    using Markdig;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using Xamarin.Forms;
@@ -71,7 +72,14 @@
 
             if (!string.IsNullOrEmpty(Markdown))
             {
-                var parsed = Markdig.Markdown.Parse(Markdown);
+                var pipeline = new MarkdownPipelineBuilder();
+
+                if (Theme.Link.UseAutolinksExtension)
+                {
+                    pipeline = pipeline.UseAutoLinks();
+                }
+
+                var parsed = Markdig.Markdown.Parse(Markdown, pipeline.Build());
                 Render(parsed.AsEnumerable());
             }
 

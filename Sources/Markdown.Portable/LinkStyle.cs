@@ -13,6 +13,7 @@ namespace Xam.Forms.Markdown
         public List<string> ExternalProtocols = new List<string> { "http://", "https://", "mailto:", "tel:" };
         public bool LoadYouTubePreview { get; set; }
         public YouTubePreview YouTubePreview { get; set; }
+        public bool UseAutolinksExtension { get; set; }
     }
 
     public class LinkData

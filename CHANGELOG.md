@@ -8,6 +8,8 @@
 - Support for converting YouTube links to video preview
   - This feature is disabled by defualt. Set `LinkStyle.LoadYouTubePreview = true` for enabling.
   - There are also callbacks `LinkStyle.YouTubePreview.CustomLoadImage` for downloading image and `LinkStyle.YouTubePreview.TransformView` for rendering it
+- Support parsing link in plaintext. (https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/AutoLinks.md)
+  - This feature is disabled by default. Set `LinkStyle.UseAutolinksExtension` for enabling. 
 
 ## 1.1.0-pre6 - 2021-02-24
 
