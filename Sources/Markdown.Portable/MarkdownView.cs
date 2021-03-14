@@ -5,7 +5,10 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Text.RegularExpressions;
     using Extensions;
+    using Markdig;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using Xamarin.Forms;
@@ -15,6 +18,8 @@
         public Action<string> NavigateToLink { get; set; } = (s) => Device.OpenUri(new Uri(s));
 
         public static MarkdownTheme Global = new LightMarkdownTheme();
+
+        static readonly WebClient webClient = new WebClient();
 
         public string Markdown
         {
@@ -67,7 +72,14 @@
 
             if (!string.IsNullOrEmpty(Markdown))
             {
-                var parsed = Markdig.Markdown.Parse(Markdown);
+                var pipeline = new MarkdownPipelineBuilder();
+
+                if (Theme.Link.UseAutolinksExtension)
+                {
+                    pipeline = pipeline.UseAutoLinks();
+                }
+
+                var parsed = Markdig.Markdown.Parse(Markdown, pipeline.Build());
                 Render(parsed.AsEnumerable());
             }
 
@@ -494,7 +506,12 @@
                         url = $"{RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
                     }
 
-                    if (link.IsImage)
+                    if (TryLoadYouTubePreview(link.Url, out var youtubePreview))
+                    {
+                        queuedViews.Add(youtubePreview);
+                        return new Span[0];
+                    }
+                    else if (link.IsImage)
                     {
                         var image = new Image();
 
@@ -561,6 +578,12 @@
         {
             var url = autolink.Url;
 
+            if (TryLoadYouTubePreview(url, out var youtubePreview))
+            {
+                queuedViews.Add(youtubePreview);
+                return new Span[0];
+            }
+
             if (autolink.IsEmail && !url.ToLower().StartsWith("mailto:"))
             {
                 url = $"mailto:{url}";
@@ -582,6 +605,91 @@
                     LineHeight = lineHeight,
                 }
             };
+        }
+
+        bool TryLoadYouTubePreview(string url, out View image)
+        {
+            image = null;
+
+            if (!Theme.Link.LoadYouTubePreview)
+            {
+                return false;
+            }
+
+            var reg = new List<Regex>
+            {
+                new Regex(@"https?:\/\/www\.youtube\.com\/watch\?v=([^&]+)&?"),
+                new Regex(@"https?:\/\/youtu\.be/([^&]+)&?"),
+            };
+
+            var match = reg.Select(o => o.Match(url)).FirstOrDefault(o => o.Success);
+
+            if (match == null)
+            {
+                return false;
+            }
+
+            var code = match.Groups[1].Value;
+
+            var theme = Theme.Link.YouTubePreview;
+
+            var imageSource = theme?.CustomLoadImage != null ? theme.CustomLoadImage(code) : DownloadImage($"https://img.youtube.com/vi/{code}/hqdefault.jpg");
+
+            if (imageSource == null)
+            {
+                return false;
+            }
+
+            image = new Image
+            {
+                Source = imageSource,
+            };
+
+            image.GestureRecognizers.Add(new TapGestureRecognizer
+            {
+                Command = new Command(() =>
+                {
+                    if (Theme.Link.CustomTapHandler != null)
+                    {
+                        Theme.Link.CustomTapHandler.Invoke(new List<LinkData> { new LinkData { Link = url, Text = url } });
+                    }
+                    else
+                    {
+                        NavigateToLink(url);
+                    }
+
+                })
+            });
+
+            if (theme?.TransformView != null)
+            {
+                image = theme.TransformView(image as Image);
+            }
+
+            return true;
+        }
+
+        ImageSource DownloadImage(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return null;
+            }
+
+            try
+            {
+                var byteArray = webClient.DownloadData(url);
+
+                if (byteArray == null || !byteArray.Any())
+                {
+                    return null;
+                }
+
+                return ImageSource.FromStream(() => new MemoryStream(byteArray));
+            }
+            catch (Exception) { }
+
+            return null;
         }
 
         #endregion
