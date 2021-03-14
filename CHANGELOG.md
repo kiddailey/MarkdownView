@@ -2,14 +2,20 @@
 
 ## Unreleased
 
+## 1.2.0 - 2021-03-14
+
 ### Added 
-- Support for autolinks (https://spec.commonmark.org/0.29/#autolinks)
-  - Autolinks are rendered the same way as regular links.
 - Support for converting YouTube links to video preview
   - This feature is disabled by defualt. Set `LinkStyle.LoadYouTubePreview = true` for enabling.
   - There are also callbacks `LinkStyle.YouTubePreview.CustomLoadImage` for downloading image and `LinkStyle.YouTubePreview.TransformView` for rendering it
 - Support parsing link in plaintext. (https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/AutoLinks.md)
-  - This feature is disabled by default. Set `LinkStyle.UseAutolinksExtension` for enabling. 
+  - This feature is disabled by default. Set `LinkStyle.UseAutolinksExtension = true` for enabling. 
+
+## 1.1.0 - 2021-02-25
+
+### Added 
+- Support for autolinks (https://spec.commonmark.org/0.29/#autolinks)
+  - Autolinks are rendered the same way as regular links.
 
 ## 1.1.0-pre6 - 2021-02-24
 
