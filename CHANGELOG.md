@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+- Support for ASCII emojis. (https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/EmojiSpecs.md)
+  - This feature is disabled by default. Set `UseEmojiAndSmileyExtension = true` for enabling. 
+
 ## 1.2.0 - 2021-03-14
 
 ### Added 

@@ -135,6 +135,8 @@ namespace Xam.Forms.Markdown
 
         public float VerticalSpacing { get; set; } = 10;
 
+        public bool UseEmojiAndSmileyExtension { get; set; }
+
     }
 
     public class LightMarkdownTheme : MarkdownTheme

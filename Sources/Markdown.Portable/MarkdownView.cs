@@ -79,6 +79,11 @@
                     pipeline = pipeline.UseAutoLinks();
                 }
 
+                if (Theme.UseEmojiAndSmileyExtension)
+                {
+                    pipeline = pipeline.UseEmojiAndSmiley();
+                }
+
                 var parsed = Markdig.Markdown.Parse(Markdown, pipeline.Build());
                 Render(parsed.AsEnumerable());
             }
