@@ -4,7 +4,8 @@
 
 ### Added
 - Support for ASCII emojis. (https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/EmojiSpecs.md)
-  - This feature is disabled by default. Set `UseEmojiAndSmileyExtension = true` for enabling. 
+  - This feature is disabled by default. Set `UseEmojiAndSmileyExtension = true` for enabling.
+- YouTube preview (added in 1.2.0) parses url from youtube-nocookie.com
 
 ## 1.2.0 - 2021-03-14
 
