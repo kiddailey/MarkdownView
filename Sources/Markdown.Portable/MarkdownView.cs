@@ -79,6 +79,11 @@
                     pipeline = pipeline.UseAutoLinks();
                 }
 
+                if (Theme.UseEmojiAndSmileyExtension)
+                {
+                    pipeline = pipeline.UseEmojiAndSmiley();
+                }
+
                 var parsed = Markdig.Markdown.Parse(Markdown, pipeline.Build());
                 Render(parsed.AsEnumerable());
             }
@@ -620,6 +625,7 @@
             {
                 new Regex(@"https?:\/\/www\.youtube\.com\/watch\?v=([^&]+)&?"),
                 new Regex(@"https?:\/\/youtu\.be/([^&]+)&?"),
+                new Regex(@"https?:\/\/www\.youtube-nocookie\.com\/embed\/([^&]+)&?"),
             };
 
             var match = reg.Select(o => o.Match(url)).FirstOrDefault(o => o.Success);
