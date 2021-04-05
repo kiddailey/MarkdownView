@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="Markdown.Samples.Controls.SettingsCard"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:selectors="clr-namespace:Markdown.Samples.Selectors">
+
+    <Frame>
+        <StackLayout>
+            <Label Text="{Binding Name}" FontAttributes="Bold">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <StackLayout
+                BindableLayout.ItemsSource="{Binding Items}"
+                BindableLayout.ItemTemplateSelector="{selectors:SettingsItemSelector}"
+                IsVisible="{Binding IsOpened}">
+
+                <StackLayout.Resources>
+                    <DataTemplate x:Key="Switch">
+                        <StackLayout IsVisible="{Binding IsVisible}">
+                            <Label Text="{Binding Label}" VerticalTextAlignment="Center" />
+                            <Switch HorizontalOptions="Start" IsToggled="{Binding IsToggled}" />
+                        </StackLayout>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="Entry">
+                        <StackLayout IsVisible="{Binding IsVisible}">
+                            <Label Text="{Binding Label}" VerticalTextAlignment="Center" />
+                            <Entry Text="{Binding Value}" WidthRequest="100" />
+                        </StackLayout>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="Stepper">
+                        <StackLayout IsVisible="{Binding IsVisible}">
+                            <Label Text="{Binding Label}" VerticalTextAlignment="Center" />
+                            <StackLayout Orientation="Horizontal">
+                                <Label
+                                    Text="{Binding Value}"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                                <Stepper Value="{Binding Value}" />
+                            </StackLayout>
+                        </StackLayout>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="Picker">
+                        <StackLayout IsVisible="{Binding IsVisible}">
+                            <Label Text="{Binding Label}" VerticalTextAlignment="Center" />
+                            <Picker
+                                WidthRequest="100"
+                                ItemsSource="{Binding Items}"
+                                SelectedItem="{Binding SelectedItem}" />
+                        </StackLayout>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="Editor">
+                        <StackLayout IsVisible="{Binding IsVisible}">
+                            <Label Text="{Binding Label}" VerticalTextAlignment="Center" />
+                            <Editor
+                                Text="{Binding Value}"
+                                WidthRequest="100"
+                                HeightRequest="100" />
+                        </StackLayout>
+                    </DataTemplate>
+
+                </StackLayout.Resources>
+
+            </StackLayout>
+        </StackLayout>
+    </Frame>
+</ContentView>

@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using Markdown.Samples.Views;
+using Xamarin.Forms;
 
 namespace MarkdownView.Samples
 {
@@ -8,11 +9,7 @@ namespace MarkdownView.Samples
         {
             InitializeComponent();
 
-            MainPage = new MasterDetailPage()
-            {
-                Master = new MenuPage() { Title = "Menu" },
-                Detail = new MarkdownView_SamplesPage()
-            };
+            MainPage = new SamplesPage();
         }
 
         protected override void OnStart()

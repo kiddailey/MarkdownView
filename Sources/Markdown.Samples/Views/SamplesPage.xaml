@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Markdown.Samples.Views.SamplesPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Markdown.Samples.Controls"
+    xmlns:markdown="clr-namespace:Xam.Forms.Markdown;assembly=Xam.Forms.Markdown"
+    xmlns:viewModels="clr-namespace:Markdown.Samples.ViewModels">
+
+    <ContentPage.BindingContext>
+        <viewModels:SamplePageViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+
+        <ScrollView x:Name="scrollView">
+            <StackLayout>
+
+                <FlexLayout
+                    HorizontalOptions="FillAndExpand"
+                    AlignItems="Center"
+                    JustifyContent="SpaceEvenly">
+                    <Button Text="Settings" Clicked="SettingsButton_Clicked" />
+                    <Button Text="Source" Clicked="SourceButton_Clicked" />
+                </FlexLayout>
+
+                <markdown:MarkdownView Markdown="{Binding Markdown}" Theme="{Binding Theme}" />
+
+                <StackLayout Padding="15">
+                    <controls:SettingsCard x:Name="source" BindingContext="{Binding SourceCard}" />
+                    <controls:SettingsCard x:Name="settings" BindingContext="{Binding BasicSettings}" />
+                    <controls:SettingsCard BindingContext="{Binding ParagraphSettings}" />
+                    <controls:SettingsCard BindingContext="{Binding Heading1Settings}" />
+                    <controls:SettingsCard BindingContext="{Binding Heading2Settings}" />
+                    <controls:SettingsCard BindingContext="{Binding Heading3Settings}" />
+                    <controls:SettingsCard BindingContext="{Binding Heading4Settings}" />
+                    <controls:SettingsCard BindingContext="{Binding Heading5Settings}" />
+                    <controls:SettingsCard BindingContext="{Binding Heading6Settings}" />
+                    <controls:SettingsCard BindingContext="{Binding LinkSettings}" />
+                    <controls:SettingsCard BindingContext="{Binding UnorderedListSettings}" />
+                    <controls:SettingsCard BindingContext="{Binding OrderedListSettings}" />
+                    <controls:SettingsCard BindingContext="{Binding CodeSettings}" />
+                    <controls:SettingsCard BindingContext="{Binding QuoteSettings}" />
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+
+    </ContentPage.Content>
+</ContentPage>
