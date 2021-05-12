@@ -22,5 +22,7 @@
 
         public TextAlignment HorizontalTextAlignment { get; set; } = TextAlignment.Start;
         public TextAlignment VerticalTextAlignment { get; set; } = TextAlignment.Center;
+
+        public TextDecorations TextDecorations { get; set; } = TextDecorations.None;
     }
 }

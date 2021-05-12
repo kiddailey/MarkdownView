@@ -4,8 +4,12 @@
 
 ## 1.4.0 - 2021-05-12
 
+### Changed
+- Dependency on Xamarin.Forms 3.5.0.274416
+
 ### Added
 - Added `LinkStyle.YouTubePreview.GenerateLoadImageUrl` which can be used for custom url of YouTube video preview. Default url is https://img.youtube.com/vi/{code}/hqdefault.jpg
+- Added `TextDecorations`
 
 ## 1.3.0 - 2021-03-17
 
