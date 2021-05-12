@@ -639,7 +639,7 @@
 
             var theme = Theme.Link.YouTubePreview;
 
-            var imageSource = theme?.CustomLoadImage != null ? theme.CustomLoadImage(code) : DownloadImage($"https://img.youtube.com/vi/{code}/hqdefault.jpg");
+            var imageSource = theme?.CustomLoadImage != null ? theme.CustomLoadImage(code) : DownloadImage(theme?.GenerateLoadImageUrl(code) ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
 
             if (imageSource == null)
             {

@@ -24,6 +24,7 @@ namespace Xam.Forms.Markdown
 
     public class YouTubePreview
     {
+        public Func<string, string> GenerateLoadImageUrl { get; set; }
         public Func<string, ImageSource> CustomLoadImage { get; set; }
         public Func<Image, View> TransformView { get; set; }
     }

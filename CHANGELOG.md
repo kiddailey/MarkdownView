@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.4.0 - 2021-05-12
+
+### Added
+- Added `LinkStyle.YouTubePreview.GenerateLoadImageUrl` which can be used for custom url of YouTube video preview. Default url is https://img.youtube.com/vi/{code}/hqdefault.jpg
+
 ## 1.3.0 - 2021-03-17
 
 ### Added
