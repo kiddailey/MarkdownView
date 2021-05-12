@@ -29,6 +29,13 @@ namespace Markdown.Samples.ViewModels
             FontAttributes.Italic,
         };
 
+        readonly List<object> textDecorationItems = new List<object>
+        {
+            TextDecorations.None,
+            TextDecorations.Underline,
+            TextDecorations.Strikethrough,
+        };
+
         readonly List<object> textAlignmentItems = new List<object>
         {
             TextAlignment.Start,
@@ -240,6 +247,10 @@ namespace Markdown.Samples.ViewModels
                 {
                     Action = (object value) => style.Attributes = (FontAttributes)value,
                 },
+                new PickerSettingsViewModel(this, "Text decorations", textDecorationItems, style.TextDecorations)
+                {
+                    Action = (object value) => style.TextDecorations = (TextDecorations)value,
+                },
                 new PickerSettingsViewModel(this, "Horizontal text alignment", textAlignmentItems, style.HorizontalTextAlignment)
                 {
                     Action = (object value) => style.HorizontalTextAlignment = (TextAlignment)value,
@@ -377,6 +388,7 @@ namespace Markdown.Samples.ViewModels
             target.HorizontalTextAlignment = source.HorizontalTextAlignment;
             target.VerticalTextAlignment = source.VerticalTextAlignment;
             target.BorderSize = source.BorderSize;
+            target.TextDecorations = source.TextDecorations;
         }
 
         void CopyListStyle(ListStyle source, ListStyle target)
