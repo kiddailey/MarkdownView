@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Added
+- Added `VideoPreviewDescriptor` which contains url and code of video and is used in all methods for loading video preview.
+
+### Changed
+- String parameter in `YouTubePreview.GenerateLoadImageUrl` and `YouTubePreview.CustomLoadImage` is changed to `VideoPreviewDescriptor`
+- `YouTubePreview.TransformView` has new parameter `VideoPreviewDescriptor`
+
 ## 1.4.0 - 2021-05-12
 
 ### Changed
