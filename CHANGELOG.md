@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.5.2 - 2021-05-21
+
 ### Fixed
 - Fixed NRE in `TryLoadYouTubePreview` when `GenerateLoadImageUrl` was null
 
