@@ -641,9 +641,15 @@
 
             var code = match.Groups[1].Value;
 
+            var videoPreviewDescriptor = new VideoPreviewDescriptor
+            {
+                Code = code,
+                VideoUrl = url,
+            };
+
             var theme = Theme.Link.YouTubePreview;
 
-            var imageSource = theme?.CustomLoadImage != null ? theme.CustomLoadImage(code) : DownloadImage(theme?.GenerateLoadImageUrl(code) ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
+            var imageSource = theme?.CustomLoadImage != null ? theme.CustomLoadImage(videoPreviewDescriptor) : DownloadImage(theme?.GenerateLoadImageUrl(videoPreviewDescriptor) ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
 
             if (imageSource == null)
             {
@@ -673,7 +679,7 @@
 
             if (theme?.TransformView != null)
             {
-                image = theme.TransformView(image as Image);
+                image = theme.TransformView(image as Image, videoPreviewDescriptor);
             }
 
             return true;
