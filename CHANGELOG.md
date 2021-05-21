@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.5.1
+
+### Fixed
+- Fixes version 1.5.0
+
 ## 1.5.0 - 2021-05-21
 
 ### Added
