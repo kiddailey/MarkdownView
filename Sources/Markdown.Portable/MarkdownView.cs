@@ -649,7 +649,16 @@
 
             var theme = Theme.Link.YouTubePreview;
 
-            var imageSource = theme?.CustomLoadImage != null ? theme.CustomLoadImage(videoPreviewDescriptor) : DownloadImage(theme?.GenerateLoadImageUrl(videoPreviewDescriptor) ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
+            ImageSource imageSource;
+
+            if (theme?.CustomLoadImage != null)
+            {
+                imageSource = theme.CustomLoadImage(videoPreviewDescriptor);
+            }
+            else
+            {
+                imageSource = DownloadImage(theme?.GenerateLoadImageUrl?.Invoke(videoPreviewDescriptor) ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
+            }
 
             if (imageSource == null)
             {
