@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.5.0 - 2021-05-21
+
 ### Added
 - Added `VideoPreviewDescriptor` which contains url and code of video and is used in all methods for loading video preview.
 
