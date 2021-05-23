@@ -23,49 +23,7 @@ Available on [NuGet](https://www.nuget.org/packages/Xam.Forms.Markdown/).
 
 ## Quickstart
 
-```csharp
-var view = new MarkdownView();
-view.Markdown = "# Hello world\n\nThis is my first native markdown rendering";
-view.Theme = new DarkMarkdownTheme(); // Default is white, you also modify various values
-this.Content = view;
-```
-
-## Limitations
-
-Unfortunately, Xamarin.Forms string rendering has some limitations ...
-
-* **Inlined images aren't supported** (*Xamarin.Forms formatted strings doesn't support inlined views*) : They will be displayed after the block they are referenced from.
-* **Links are only clickable at a leaf block level**  (*Xamarin.Forms formatted strings doesn't support span user interactions*) : if a leaf block contains more than one link, the user is prompted. This is almost a feature since text may be too small to be enough precise! ;)
-* **SVG rendering is very limited** (*The SVG rendering is based on SkiaSharp which doesn't seem to manage well all svg renderings*)
-
-## Roadmap
-
-* **Customization**
-	* [X] Styles 
-	* [X] Themes 
-* **Leaf blocks**
-	* [X] Headings
-	* [X] Paragraphs
-	* [ ] HTML Blocks (maybe partial and specific support)
-	* [ ] Link reference definitions
-	* [X] Code blocks
-	* [X] Thematic breaks
-* **Container blocks**
-	* [X] Block quote
-	* [X] Lists
-		* [ ] Numbers bullet formats
-		* [ ] Custom bullets
-* **Inlines**
-	* [X] Textual content
-	* [X] Emphasis and string emphasis
-	* [X] Code spans
-	* [X] Links (partial, no interaction)
-	* [X] Image blocks (partial, not inlined)
-		* [X] SVG Rendering (Skia)
-* **Extensions**
-	* [ ] Table blocks
-	* [ ] Emojis (ascii)
-	* [ ] Task lists 
+See [documentation](https://github.com/bares43/MarkdownView/wiki#basic-usage).
 
 ## Thanks
 
