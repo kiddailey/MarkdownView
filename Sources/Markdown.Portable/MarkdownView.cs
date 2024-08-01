@@ -521,7 +521,21 @@
                     }
                     else if (link.IsImage)
                     {
-                        var image = new Image();
+                        // In MAUI, image expand, so we need a Grid to contain it
+                        var grid = new Grid()
+                        {
+                            RowDefinitions = [new RowDefinition(GridLength.Auto)],
+                            ColumnDefinitions = [new ColumnDefinition(GridLength.Auto)],
+                            HorizontalOptions = LayoutOptions.Center
+                        };
+
+                        var image = new Image
+                        {
+                            HeightRequest = -1, // Auto height
+                            WidthRequest = -1, // Auto width
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center
+                        };
 
                         if (Path.GetExtension(url) == ".svg")
                         {
@@ -532,7 +546,9 @@
                             image.Source = url;
                         }
 
-                        queuedViews.Add(image);
+                        grid.Add(image, 0, 0);
+
+                        queuedViews.Add(grid);
                         return new Span[0];
                     }
                     else
