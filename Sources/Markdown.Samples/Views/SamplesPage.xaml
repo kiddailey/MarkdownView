@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="Markdown.Samples.Views.SamplesPage"
-    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Markdown.Samples.Controls"
     xmlns:markdown="clr-namespace:Xam.Forms.Markdown;assembly=Xam.Forms.Markdown"
@@ -19,7 +19,8 @@
                 <FlexLayout
                     HorizontalOptions="FillAndExpand"
                     AlignItems="Center"
-                    JustifyContent="SpaceEvenly">
+                    JustifyContent="SpaceEvenly" Margin="20">
+                    <!-- Margin to resolve FlexLayout/AlignItemsCenter bug #23956 -->
                     <Button Text="Settings" Clicked="SettingsButton_Clicked" />
                     <Button Text="Source" Clicked="SourceButton_Clicked" />
                 </FlexLayout>

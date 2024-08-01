@@ -1,6 +1,8 @@
-﻿namespace Xam.Forms.Markdown
+﻿using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
+namespace Xam.Forms.Markdown
 {
-    using Xamarin.Forms;
 
     public class MarkdownStyle
     {
@@ -10,9 +12,9 @@
 
         public float LineHeight { get; set; } = -1;
 
-        public Color ForegroundColor { get; set; } = Color.Black;
+        public Color ForegroundColor { get; set; } = Colors.Black;
 
-        public Color BackgroundColor { get; set; } = Color.Transparent;
+        public Color BackgroundColor { get; set; } = Colors.Transparent;
 
         public Color BorderColor { get; set; }
 

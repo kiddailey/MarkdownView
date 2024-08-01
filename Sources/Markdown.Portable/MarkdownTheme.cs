@@ -1,7 +1,8 @@
-﻿
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+
 namespace Xam.Forms.Markdown
 {
-    using Xamarin.Forms;
 
     public class MarkdownTheme
     {
@@ -68,7 +69,7 @@ namespace Xam.Forms.Markdown
                 Attributes = FontAttributes.None,
                 BorderSize = 4,
                 FontSize = 12,
-                BackgroundColor = Color.Gray.MultiplyAlpha(.1),
+                BackgroundColor = Colors.Gray.MultiplyAlpha(.1f),
             };
 
             Separator = new MarkdownStyle
@@ -91,7 +92,9 @@ namespace Xam.Forms.Markdown
             };
 
             // Platform specific properties
-            switch (Device.RuntimePlatform)
+            // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
+                        // TODO Xamarin.Forms.Device.RuntimePlatform is no longer supported. Use Microsoft.Maui.Devices.DeviceInfo.Platform instead. For more details see https://learn.microsoft.com/en-us/dotnet/maui/migration/forms-projects#device-changes
+                                                switch (Device.RuntimePlatform)
             {
                 case Device.iOS:
                     Code.FontFamily = "Courier";
@@ -161,19 +164,19 @@ namespace Xam.Forms.Markdown
             Separator.BorderColor = DefaultSeparatorColor;
         }
 
-        public static readonly Color DefaultBackgroundColor = Color.FromHex("#ffffff");
+        public static readonly Color DefaultBackgroundColor = Color.FromArgb("#ffffff");
 
-        public static readonly Color DefaultAccentColor = Color.FromHex("#0366d6");
+        public static readonly Color DefaultAccentColor = Color.FromArgb("#0366d6");
 
-        public static readonly Color DefaultTextColor = Color.FromHex("#24292e");
+        public static readonly Color DefaultTextColor = Color.FromArgb("#24292e");
 
-        public static readonly Color DefaultCodeBackground = Color.FromHex("#f6f8fa");
+        public static readonly Color DefaultCodeBackground = Color.FromArgb("#f6f8fa");
 
-        public static readonly Color DefaultSeparatorColor = Color.FromHex("#eaecef");
+        public static readonly Color DefaultSeparatorColor = Color.FromArgb("#eaecef");
 
-        public static readonly Color DefaultQuoteTextColor = Color.FromHex("#6a737d");
+        public static readonly Color DefaultQuoteTextColor = Color.FromArgb("#6a737d");
 
-        public static readonly Color DefaultQuoteBorderColor = Color.FromHex("#dfe2e5");
+        public static readonly Color DefaultQuoteBorderColor = Color.FromArgb("#dfe2e5");
     }
 
     public class DarkMarkdownTheme : MarkdownTheme
@@ -198,18 +201,18 @@ namespace Xam.Forms.Markdown
             Separator.BorderColor = DefaultSeparatorColor;
         }
 
-        public static readonly Color DefaultBackgroundColor = Color.FromHex("#2b303b");
+        public static readonly Color DefaultBackgroundColor = Color.FromArgb("#2b303b");
 
-        public static readonly Color DefaultAccentColor = Color.FromHex("#d08770");
+        public static readonly Color DefaultAccentColor = Color.FromArgb("#d08770");
 
-        public static readonly Color DefaultTextColor = Color.FromHex("#eff1f5");
+        public static readonly Color DefaultTextColor = Color.FromArgb("#eff1f5");
 
-        public static readonly Color DefaultCodeBackground = Color.FromHex("#4f5b66");
+        public static readonly Color DefaultCodeBackground = Color.FromArgb("#4f5b66");
 
-        public static readonly Color DefaultSeparatorColor = Color.FromHex("#65737e");
+        public static readonly Color DefaultSeparatorColor = Color.FromArgb("#65737e");
 
-        public static readonly Color DefaultQuoteTextColor = Color.FromHex("#a7adba");
+        public static readonly Color DefaultQuoteTextColor = Color.FromArgb("#a7adba");
 
-        public static readonly Color DefaultQuoteBorderColor = Color.FromHex("#a7adba");
+        public static readonly Color DefaultQuoteBorderColor = Color.FromArgb("#a7adba");
     }
 }

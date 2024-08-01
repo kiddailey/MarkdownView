@@ -1,5 +1,4 @@
 ﻿using Markdown.Samples.ViewModels;
-using Xamarin.Forms;
 
 namespace Markdown.Samples.Selectors
 {

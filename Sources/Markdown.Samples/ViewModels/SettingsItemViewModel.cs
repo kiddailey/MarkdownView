@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Markdown.Samples.ViewModels
+﻿namespace Markdown.Samples.ViewModels
 {
     public abstract class SettingsItemViewModel : BaseViewModel
     {

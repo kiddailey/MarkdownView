@@ -1,6 +1,7 @@
 ﻿using System;
 using Markdig.Syntax;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
 
 namespace Xam.Forms.Markdown
 {

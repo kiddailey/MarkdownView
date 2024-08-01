@@ -1,7 +1,6 @@
 ﻿using Markdown.Samples.Views;
-using Xamarin.Forms;
 
-namespace MarkdownView.Samples
+namespace Markdown.Samples
 {
     public partial class App : Application
     {
@@ -10,21 +9,6 @@ namespace MarkdownView.Samples
             InitializeComponent();
 
             MainPage = new SamplesPage();
-        }
-
-        protected override void OnStart()
-        {
-            // Handle when your app starts
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿namespace Xam.Forms.Markdown.Extensions
+﻿using System.Diagnostics;
+using System.Net;
+using SkiaSharp;
+
+namespace Xam.Forms.Markdown.Extensions
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Net;
-    using SkiaSharp;
-    using Xamarin.Forms;
 
     public static class ImageExtensions
     {

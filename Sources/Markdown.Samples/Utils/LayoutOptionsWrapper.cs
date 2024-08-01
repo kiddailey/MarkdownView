@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms;
-
-namespace Markdown.Samples.Utils
+﻿namespace Markdown.Samples.Utils
 {
     public class LayoutOptionsWrapper
     {

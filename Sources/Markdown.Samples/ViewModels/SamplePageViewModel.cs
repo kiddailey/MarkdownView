@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Markdown.Samples.Utils;
 using Xam.Forms.Markdown;
-using Xamarin.Forms;
 
 namespace Markdown.Samples.ViewModels
 {

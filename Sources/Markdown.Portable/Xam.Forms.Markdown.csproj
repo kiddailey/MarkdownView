@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-
   <PropertyGroup>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <AssemblyFileVersion>0.0.0.0</AssemblyFileVersion>
@@ -25,12 +19,18 @@
     <PackageProjectUrl>https://github.com/bares43/MarkdownView</PackageProjectUrl>
     <AssemblyName>Xam.Forms.Markdown</AssemblyName>
     <RootNamespace>Xam.Forms.Markdown</RootNamespace>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <UseMaui>True</UseMaui>
+    <OutputType>Library</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SingleProject>true</SingleProject>
   </PropertyGroup>
-    
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
     <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.71" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
   </ItemGroup>
-    
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.71" />
+  </ItemGroup>
 </Project>
