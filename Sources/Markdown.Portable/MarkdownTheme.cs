@@ -81,6 +81,8 @@ namespace MauiMarkdown
                 BulletStyleType = ListStyleType.Decimal,
                 BulletVerticalOptions = LayoutOptions.Start,
                 ItemVerticalOptions = LayoutOptions.Start,
+                TaskCheckboxVerticalOptions = LayoutOptions.Start,
+                Spacing = 4,
             };
 
             UnorderedList = new ListStyle
@@ -88,6 +90,8 @@ namespace MauiMarkdown
                 BulletStyleType = ListStyleType.Square,
                 BulletVerticalOptions = LayoutOptions.Center,
                 ItemVerticalOptions = LayoutOptions.Center,
+                TaskCheckboxVerticalOptions = LayoutOptions.Start,
+                Spacing = 4,
             };
 
             // Platform specific properties
@@ -175,6 +179,8 @@ namespace MauiMarkdown
 
         public bool UseTablesExtension {  get; set; }
         public TableStyle Table { get; set; }
+
+        public bool UseTaskListsExtension { get; set; }
     }
 
     public class LightMarkdownTheme : MarkdownTheme

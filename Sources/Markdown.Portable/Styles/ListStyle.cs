@@ -4,7 +4,7 @@ namespace MauiMarkdown.Styles
 {
     public class ListStyle
     {
-        public float Indentation { get; set; } = 10;
+        public float Indentation { get; set; } = 12;
         public float? Spacing { get; set; }
         public float ItemsVerticalSpacing { get; set; } = 10;
         public Thickness ListMargin { get; set; } = new Thickness(0);
@@ -15,6 +15,7 @@ namespace MauiMarkdown.Styles
         public Color BulletColor { get; set; }
         public FontAttributes BulletFontAttributes { get; set; } = FontAttributes.None;
         public LayoutOptions BulletVerticalOptions { get; set; }
+        public LayoutOptions TaskCheckboxVerticalOptions { get; set; }
         public LayoutOptions ItemVerticalOptions { get; set; }
         public string Symbol { get; set; }
         public Func<int, ListBlock, ListItemBlock, View> CustomCallback { get; set; }

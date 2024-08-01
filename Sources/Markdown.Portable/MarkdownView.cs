@@ -10,6 +10,7 @@
     using Extensions;
     using Markdig;
     using Markdig.Extensions.Tables;
+    using Markdig.Extensions.TaskLists;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using MauiMarkdown.Styles;
@@ -102,6 +103,11 @@
                 {
                     pipeline = pipeline.UseGridTables();
                     pipeline = pipeline.UsePipeTables();
+                }
+
+                if (Theme.UseTaskListsExtension)
+                {
+                    pipeline = pipeline.UseTaskLists();
                 }
 
                 if (Theme.UseEmojiAndSmileyExtension)
@@ -316,6 +322,27 @@
 
         View GetListBullet(ListStyle listTheme, int index, ListBlock parent, ListItemBlock block)
         {
+            TaskList? thisTaskList = null;
+
+            try
+            {
+                if (((Markdig.Syntax.LeafBlock)block.First()).Inline.FirstChild is TaskList)
+                    thisTaskList = ((Markdig.Syntax.LeafBlock)block.First()).Inline.FirstChild as TaskList;
+            }
+            catch { }
+
+            if (thisTaskList != null)
+            {
+                return new Label()
+                {
+                    Text = thisTaskList.Checked ? "\u2612" : "\u2610",
+                    Margin = 0,
+                    FontSize = Theme.Paragraph.FontSize,
+                    TextColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
+                    VerticalOptions = listTheme.TaskCheckboxVerticalOptions,
+                    HorizontalOptions = LayoutOptions.Center,
+                };
+            }
 
             if (listTheme.BulletStyleType == ListStyleType.None)
             {
@@ -600,6 +627,10 @@
         {
             switch (inline)
             {
+                case TaskList taskList:
+                    // Task list checkboxes are rendered as list bullets in GetListBullet
+                    return Array.Empty<Span>();
+
                 case LiteralInline literal:
                     return new[]
                     {
