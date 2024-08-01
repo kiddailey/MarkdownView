@@ -87,6 +87,11 @@
                     pipeline = pipeline.UseEmojiAndSmiley();
                 }
 
+                if (Theme.UseEmphasisExtrasExtension)
+                {
+                    pipeline = pipeline.UseEmphasisExtras();
+                }
+
                 var parsed = Markdig.Markdown.Parse(Markdown, pipeline.Build());
                 Render(parsed.AsEnumerable());
             }
@@ -385,6 +390,10 @@
                 FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, style.TextDecorations, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
                 HorizontalTextAlignment = style.HorizontalTextAlignment,
                 VerticalTextAlignment = style.VerticalTextAlignment,
+                TextColor = foregroundColor, 
+                // Must set parent Label TextColor for TextDecorations such
+                // as strikethrough and underline to display due to bug
+                // See https://github.com/dotnet/maui/issues/23488
             };
             AttachLinks(label);
             stack.Children.Add(label);
@@ -499,8 +508,69 @@
                     };
 
                 case EmphasisInline emphasis:
-                    var childAttributes = attributes | (emphasis.IsDouble ? FontAttributes.Bold : FontAttributes.Italic);
-                    return emphasis.SelectMany(x => CreateSpans(x, family, childAttributes, textDecorations, foregroundColor, backgroundColor, size, lineHeight)).ToArray();
+                    var childAttributes = attributes;
+                    var childDecorations = textDecorations;
+
+                    switch (emphasis.DelimiterChar)
+                    {
+                        // Bold/italics
+                        case '*':
+                        case '_':
+                            childAttributes = childAttributes | (emphasis.DelimiterCount == 2 ? FontAttributes.Bold : FontAttributes.Italic);
+                            break;
+
+                        // Strikethrough/Subscript
+                        case '~':
+                            if (emphasis.DelimiterCount == 2)
+                                childDecorations = childDecorations | TextDecorations.Strikethrough;
+                            else
+                            {
+                                family = Theme.SubScript.FontFamily;
+                                size = Theme.SubScript.FontSize;
+                                childDecorations = Theme.SubScript.TextDecorations;
+                                childAttributes = Theme.SubScript.Attributes;
+                                foregroundColor = Theme.SubScript.ForegroundColor;
+                                backgroundColor = Theme.SubScript.BackgroundColor;
+                                lineHeight = Theme.SubScript.LineHeight;
+                            }
+                            break;
+
+                        // Superscript
+                        case '^':
+                            family = Theme.SuperScript.FontFamily;
+                            size = Theme.SuperScript.FontSize;
+                            childDecorations = Theme.SuperScript.TextDecorations;
+                            childAttributes = Theme.SuperScript.Attributes;
+                            foregroundColor = Theme.SuperScript.ForegroundColor;
+                            backgroundColor = Theme.SuperScript.BackgroundColor;
+                            lineHeight = Theme.SuperScript.LineHeight;
+                            break;
+
+                        // Marked
+                        case '=':
+                            if (emphasis.DelimiterCount != 2) break;
+                            family = Theme.Marked.FontFamily;
+                            size = Theme.Marked.FontSize;
+                            childDecorations = Theme.Marked.TextDecorations;
+                            childAttributes = Theme.Marked.Attributes;
+                            foregroundColor = Theme.Marked.ForegroundColor;
+                            backgroundColor = Theme.Marked.BackgroundColor;
+                            lineHeight = Theme.Marked.LineHeight;
+                            break;
+
+                        // Inserted
+                        case '+':
+                            if (emphasis.DelimiterCount != 2) break;
+                            family = Theme.Inserted.FontFamily;
+                            size = Theme.Inserted.FontSize;
+                            childDecorations = Theme.Inserted.TextDecorations;
+                            childAttributes = Theme.Inserted.Attributes;
+                            foregroundColor = Theme.Inserted.ForegroundColor;
+                            backgroundColor = Theme.Inserted.BackgroundColor;
+                            lineHeight = Theme.Inserted.LineHeight;
+                            break;
+                    }
+                    return emphasis.SelectMany(x => CreateSpans(x, family, childAttributes, childDecorations, foregroundColor, backgroundColor, size, lineHeight)).ToArray();
 
                 case LineBreakInline breakline:
                     return new[] { new Span { Text = "\n" } };

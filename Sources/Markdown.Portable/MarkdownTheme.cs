@@ -99,7 +99,31 @@
                 case Device.Android:
                     Code.FontFamily = "monospace";
                     break;
-            }
+            };
+
+            // MAUI cannot currently do subscript in FormattedStrings
+            // So we simulate with making the font smaller
+            SubScript = new MarkdownStyle
+            {
+                FontSize = 6
+            };
+
+            // MAUI cannot currently do superscript in FormattedStrings
+            // So we simulate with making the font smaller
+            SuperScript = new MarkdownStyle
+            {
+                FontSize = 6
+            };
+
+            Marked = new MarkdownStyle
+            {
+                BackgroundColor = Colors.Yellow
+            };
+
+            Inserted = new MarkdownStyle
+            {
+                TextDecorations = TextDecorations.Underline
+            };
         }
 
         public Color BackgroundColor { get; set; }
@@ -136,6 +160,11 @@
 
         public bool UseEmojiAndSmileyExtension { get; set; }
 
+        public bool UseEmphasisExtrasExtension {  get; set; }
+        public MarkdownStyle SuperScript {  get; set; }
+        public MarkdownStyle SubScript {  get; set; }
+        public MarkdownStyle Marked {  get; set; }
+        public MarkdownStyle Inserted {  get; set; }
     }
 
     public class LightMarkdownTheme : MarkdownTheme
@@ -158,6 +187,7 @@
             Quote.ForegroundColor = DefaultQuoteTextColor;
             Quote.BorderColor = DefaultQuoteBorderColor;
             Separator.BorderColor = DefaultSeparatorColor;
+            Marked.BackgroundColor = DefaultMarkedBackgroundColor;
         }
 
         public static readonly Color DefaultBackgroundColor = Color.FromArgb("#ffffff");
@@ -173,6 +203,8 @@
         public static readonly Color DefaultQuoteTextColor = Color.FromArgb("#6a737d");
 
         public static readonly Color DefaultQuoteBorderColor = Color.FromArgb("#dfe2e5");
+
+        public static readonly Color DefaultMarkedBackgroundColor = Color.FromArgb("#ffff8f");
     }
 
     public class DarkMarkdownTheme : MarkdownTheme
@@ -195,6 +227,7 @@
             Quote.ForegroundColor = DefaultQuoteTextColor;
             Quote.BorderColor = DefaultQuoteBorderColor;
             Separator.BorderColor = DefaultSeparatorColor;
+            Marked.BackgroundColor = DefaultMarkedBackgroundColor;
         }
 
         public static readonly Color DefaultBackgroundColor = Color.FromArgb("#2b303b");
@@ -210,5 +243,7 @@
         public static readonly Color DefaultQuoteTextColor = Color.FromArgb("#a7adba");
 
         public static readonly Color DefaultQuoteBorderColor = Color.FromArgb("#a7adba");
+
+        public static readonly Color DefaultMarkedBackgroundColor = Color.FromArgb("#ffff8f");
     }
 }
