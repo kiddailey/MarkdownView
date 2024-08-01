@@ -50,6 +50,14 @@
 
         public static readonly BindableProperty ThemeProperty = BindableProperty.Create(nameof(Theme), typeof(MarkdownTheme), typeof(MarkdownView), Global, propertyChanged: OnMarkdownChanged);
 
+        public bool RenderEnabled
+        {
+            get { return (bool)GetValue(RenderEnabledProperty); }
+            set { SetValue(RenderEnabledProperty, value); }
+        }
+
+        public static readonly BindableProperty RenderEnabledProperty = BindableProperty.Create(nameof(RenderEnabled), typeof(bool), typeof(bool), true, propertyChanged: OnMarkdownChanged);
+
         bool isQuoted;
 
         readonly List<View> queuedViews = new List<View>();
@@ -57,6 +65,7 @@
         static void OnMarkdownChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var view = bindable as MarkdownView;
+            if (!view.RenderEnabled) return;
             view.RenderMarkdown();
         }
 
