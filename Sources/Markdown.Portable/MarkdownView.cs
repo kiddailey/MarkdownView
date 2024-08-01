@@ -292,7 +292,7 @@
                 },
                 ColumnSpacing = listTheme.Spacing ?? Theme.Margin,
                 RowSpacing = 0,
-                Margin = new Thickness(block.Column * listTheme.Indentation, 0, 0, 0),
+                Margin = new Thickness(listTheme.Indentation, 0, 0, 0),
             };
 
             if (listTheme.BulletStyleType == ListStyleType.None)
