@@ -6,8 +6,8 @@
     <PackageVersion>0.0.0.0</PackageVersion>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
     <Authors>bares43</Authors>
-    <PackageId>Xam.Forms.Markdown</PackageId>
-    <Title>MarkdownView for Xamarin.Forms</Title>
+    <PackageId>MauiMarkdown</PackageId>
+    <Title>MarkdownView for MAUI</Title>
     <Summary>Native markdown rendering for Xamarin.Forms.</Summary>
     <Description>Native markdown rendering for Xamarin.Forms.</Description>
     <PackageTags>xamarin, ios, android, md, markdown, native, xamarin.forms</PackageTags>
