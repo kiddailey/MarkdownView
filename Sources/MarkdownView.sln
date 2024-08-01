@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xam.Forms.Markdown", "Markdown.Portable\Xam.Forms.Markdown.csproj", "{17728834-C586-4C2E-A1D7-F2E7AD1E1FBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiMarkdown", "Markdown.Portable\MauiMarkdown.csproj", "{17728834-C586-4C2E-A1D7-F2E7AD1E1FBF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{BD895E94-AF92-409F-8D79-A5DAD7556CC0}"
 EndProject

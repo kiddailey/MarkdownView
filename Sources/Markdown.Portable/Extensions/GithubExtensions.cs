@@ -1,4 +1,4 @@
-﻿namespace Xam.Forms.Markdown
+﻿namespace MauiMarkdown
 {
     using System.Text.RegularExpressions;
 

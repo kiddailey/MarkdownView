@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Xam.Forms.Markdown</id>
+    <id>MauiMarkdown</id>
     <version>1.5.2</version>
-    <title>Xam.Forms.Markdown</title>
+    <title>MauiMarkdown</title>
     <authors>bares43</authors>
     <owners>bares43</owners>
     <projectUrl>https://github.com/bares43/MarkdownView</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Actively developed (2021) native markdown rendering for Xamarin.Forms.</description>
+    <description>Actively developed (2024) native markdown rendering for MAUI.</description>
     <releaseNotes>
       https://github.com/bares43/MarkdownView/blob/dev/CHANGELOG.md
     </releaseNotes>
-    <copyright>Copyright 2021</copyright>
-    <tags>xamarin ios android md markdown native xamarin.forms</tags>
+    <copyright>Copyright 2024</copyright>
+    <tags>maui ios android maccatalyst windows md markdown native</tags>
   </metadata>
 </package>

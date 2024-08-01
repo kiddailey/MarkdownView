@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Markdown.Samples.Utils;
-using Xam.Forms.Markdown;
+using MauiMarkdown;
 
 namespace Markdown.Samples.ViewModels
 {

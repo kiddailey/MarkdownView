@@ -17,8 +17,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/aloisdeniel/MarkdownView/master/Documentation/Logo.png</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/aloisdeniel/MarkdownView/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/bares43/MarkdownView</PackageProjectUrl>
-    <AssemblyName>Xam.Forms.Markdown</AssemblyName>
-    <RootNamespace>Xam.Forms.Markdown</RootNamespace>
+    <AssemblyName>MauiMarkdown</AssemblyName>
+    <RootNamespace>MauiMarkdown</RootNamespace>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <UseMaui>True</UseMaui>
     <OutputType>Library</OutputType>

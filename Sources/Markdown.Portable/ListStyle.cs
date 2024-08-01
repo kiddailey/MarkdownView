@@ -1,9 +1,6 @@
-﻿using System;
-using Markdig.Syntax;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+﻿using Markdig.Syntax;
 
-namespace Xam.Forms.Markdown
+namespace MauiMarkdown
 {
     public class ListStyle
     {

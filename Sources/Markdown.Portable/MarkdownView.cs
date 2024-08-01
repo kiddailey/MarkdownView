@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-namespace Xam.Forms.Markdown
+﻿namespace MauiMarkdown
 {
     using System;
     using System.Collections.Generic;

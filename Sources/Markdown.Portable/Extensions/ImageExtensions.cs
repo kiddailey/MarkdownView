@@ -2,7 +2,7 @@
 using System.Net;
 using SkiaSharp;
 
-namespace Xam.Forms.Markdown.Extensions
+namespace MauiMarkdown.Extensions
 {
 
     public static class ImageExtensions

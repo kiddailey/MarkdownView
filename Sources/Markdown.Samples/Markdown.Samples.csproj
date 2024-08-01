@@ -76,7 +76,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Markdown.Portable\Xam.Forms.Markdown.csproj" />
+	  <ProjectReference Include="..\Markdown.Portable\MauiMarkdown.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
