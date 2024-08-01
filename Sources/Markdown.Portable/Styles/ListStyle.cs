@@ -1,6 +1,6 @@
 ﻿using Markdig.Syntax;
 
-namespace MauiMarkdown
+namespace MauiMarkdown.Styles
 {
     public class ListStyle
     {
@@ -12,7 +12,7 @@ namespace MauiMarkdown
         public int BulletSize { get; set; } = 4;
         public float? BulletFontSize { get; set; }
         public float? BulletLineHeight { get; set; }
-        public Color? BulletColor { get; set; }
+        public Color BulletColor { get; set; }
         public FontAttributes BulletFontAttributes { get; set; } = FontAttributes.None;
         public LayoutOptions BulletVerticalOptions { get; set; }
         public LayoutOptions ItemVerticalOptions { get; set; }

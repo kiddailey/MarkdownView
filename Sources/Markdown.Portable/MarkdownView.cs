@@ -9,8 +9,10 @@
     using System.Text.RegularExpressions;
     using Extensions;
     using Markdig;
+    using Markdig.Extensions.Tables;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
+    using MauiMarkdown.Styles;
 
     public class MarkdownView : ContentView
     {
@@ -82,14 +84,20 @@
                     pipeline = pipeline.UseAutoLinks();
                 }
 
-                if (Theme.UseEmojiAndSmileyExtension)
-                {
-                    pipeline = pipeline.UseEmojiAndSmiley();
-                }
-
                 if (Theme.UseEmphasisExtrasExtension)
                 {
                     pipeline = pipeline.UseEmphasisExtras();
+                }
+
+                if (Theme.UseTablesExtension)
+                {
+                    pipeline = pipeline.UseGridTables();
+                    pipeline = pipeline.UsePipeTables();
+                }
+
+                if (Theme.UseEmojiAndSmileyExtension)
+                {
+                    pipeline = pipeline.UseEmojiAndSmiley();
                 }
 
                 var parsed = Markdig.Markdown.Parse(Markdown, pipeline.Build());
@@ -189,6 +197,10 @@
 
                 case HtmlBlock html:
                     Render(html);
+                    break;
+
+                case Table table:
+                    Render(table);
                     break;
 
                 default:
@@ -381,13 +393,101 @@
             }
         }
 
+        bool isHeader = false;
+
+        void Render(Table table)
+        {
+            var initialStack = stack;
+            var style = Theme.Table;
+
+            stack = new StackLayout();
+
+            var tableGrid = new Grid
+            {
+                Margin = style.Margin,
+                ColumnSpacing = style.ColumnSpacing,
+                RowSpacing = style.RowSpacing
+            };
+
+            for (var i = 0; i < table.ColumnDefinitions.Count; i++)
+            {
+                tableGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            }
+
+            for (var i = 0; i < table.Count; i++) // extra for header row
+            {
+                tableGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            }
+
+            var rowCount = 0;
+            foreach (var rowObj in table)
+            {
+                var row = (TableRow)rowObj;
+
+                isHeader = row.IsHeader;
+
+                for (var column = 0; column < row.Count; column++)
+                {
+                    var cellObj = row[column];
+                    var cell = (TableCell)cellObj;
+
+                    stack = new StackLayout();
+                    if (isHeader)
+                    {
+                        var cr = new CornerRadius(0);
+
+                        if (column == 0) cr = new CornerRadius(style.CornerRadius.TopLeft, 0, 0, 0);
+                        if (column == row.Count - 1) cr = new CornerRadius(0, style.CornerRadius.TopRight, 0, 0);
+
+                        var bv = new BoxView()
+                        {
+                            BackgroundColor = style.Header.BackgroundColor,
+                            CornerRadius = cr,
+                        };
+                        tableGrid.Add(bv, column, rowCount);
+                        stack.Margin = style.Header.Padding;
+                        stack.HorizontalOptions = style.Header.HorizontalTextOptions;
+                        stack.VerticalOptions = style.Header.VerticalTextOptions;
+                    }
+                    else
+                    {
+                        var cr = new CornerRadius(0);
+                        if (rowCount == table.Count - 1)
+                        {
+                            if (column == 0) cr = new CornerRadius(0, 0, style.CornerRadius.BottomLeft, 0);
+                            if (column == row.Count - 1) cr = new CornerRadius(0, 0, 0, style.CornerRadius.BottomRight);
+                        }
+
+                        var bv = new BoxView()
+                        {
+                            BackgroundColor = style.Cell.BackgroundColor,
+                            CornerRadius = cr,
+                        };
+                        tableGrid.Add(bv, column, rowCount);
+                        stack.Margin = style.Cell.Padding;
+                        stack.HorizontalOptions = style.Cell.HorizontalTextOptions;
+                        stack.VerticalOptions = style.Cell.VerticalTextOptions;
+                    }
+                    Render(cell.AsEnumerable());
+                    tableGrid.Add(stack, column, rowCount);
+                }
+
+                rowCount++;
+            }
+
+            initialStack.Children.Add(tableGrid);
+            stack = initialStack;
+        }
+
         void Render(ParagraphBlock block)
         {
             var style = Theme.Paragraph;
             var foregroundColor = isQuoted ? Theme.Quote.ForegroundColor : style.ForegroundColor;
+            var attributs = !isHeader ? style.Attributes : Theme.Table.Header.FontAttributes; ;
+
             var label = new Label
             {
-                FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, style.TextDecorations, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
+                FormattedText = CreateFormatted(block.Inline, style.FontFamily, attributs, style.TextDecorations, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
                 HorizontalTextAlignment = style.HorizontalTextAlignment,
                 VerticalTextAlignment = style.VerticalTextAlignment,
                 TextColor = foregroundColor, 

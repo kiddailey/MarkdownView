@@ -1,4 +1,6 @@
-﻿namespace MauiMarkdown
+﻿using MauiMarkdown.Styles;
+
+namespace MauiMarkdown
 {
 
     public class MarkdownTheme
@@ -124,6 +126,11 @@
             {
                 TextDecorations = TextDecorations.Underline
             };
+
+            Table = new TableStyle
+            {
+
+            };
         }
 
         public Color BackgroundColor { get; set; }
@@ -165,6 +172,9 @@
         public MarkdownStyle SubScript {  get; set; }
         public MarkdownStyle Marked {  get; set; }
         public MarkdownStyle Inserted {  get; set; }
+
+        public bool UseTablesExtension {  get; set; }
+        public TableStyle Table { get; set; }
     }
 
     public class LightMarkdownTheme : MarkdownTheme

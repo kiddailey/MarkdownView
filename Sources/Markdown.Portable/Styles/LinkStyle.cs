@@ -1,4 +1,4 @@
-﻿namespace MauiMarkdown
+﻿namespace MauiMarkdown.Styles
 {
     public class LinkStyle : MarkdownStyle
     {
