@@ -5,47 +5,65 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Markdown.Samples.Controls"
     xmlns:markdown="clr-namespace:MauiMarkdown;assembly=MauiMarkdown"
-    xmlns:viewModels="clr-namespace:Markdown.Samples.ViewModels">
+    xmlns:viewModels="clr-namespace:Markdown.Samples.ViewModels"
+    NavigationPage.HasBackButton="False"
+    NavigationPage.HasNavigationBar="False">
 
     <ContentPage.BindingContext>
         <viewModels:SamplePageViewModel />
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
+        <Grid RowDefinitions="Auto,*">
 
-        <ScrollView x:Name="scrollView">
-            <StackLayout>
+            <BoxView
+                Grid.Row="0"
+                BackgroundColor="Black"
+                />
 
-                <FlexLayout
+            <Button
+                Grid.Row="0"
+                Margin="15"
+                Text="Edit"
+                Command="{Binding EditMarkdownCommand}"
+                IsVisible="{Binding IsRendering}"
+                ToolTipProperties.Text="Edit the markdown"
+                />
+
+            <ScrollView Grid.Row="1" x:Name="scrollView" IsVisible="{Binding IsRendering}">
+                <markdown:MarkdownView 
+                    Markdown="{Binding Markdown}" 
+                    Settings="{Binding Settings}"
+                    Padding="12"
+                    RenderEnabled="{Binding IsRendering}"
+                    />
+            </ScrollView>
+
+
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*" Margin="15"
+                IsVisible="{Binding IsEditing}"
+                  ColumnSpacing="15"
+                  >
+                <Button Grid.Column="0" Text="Apply" Command="{Binding UpdateMarkdownCommand}" />
+                <Button Grid.Column="1" Text="Cancel" Command="{Binding RevertMarkdownCommand}" />
+                <Button Grid.Column="2" Text="Revert" Command="{Binding ResetMarkdownCommand}" />
+                
+            </Grid>
+
+            <Grid Grid.Row="1" RowDefinitions="*,Auto"
+                    IsVisible="{Binding IsEditing}">
+
+                <Editor
+                    Grid.Row="0"
+                    Text="{Binding Markdown}"
                     HorizontalOptions="FillAndExpand"
-                    AlignItems="Center"
-                    JustifyContent="SpaceEvenly" Margin="20">
-                    <!-- Margin to resolve FlexLayout/AlignItemsCenter bug #23956 -->
-                    <Button Text="Settings" Clicked="SettingsButton_Clicked" />
-                    <Button Text="Source" Clicked="SourceButton_Clicked" />
-                </FlexLayout>
-
-                <markdown:MarkdownView Markdown="{Binding Markdown}" Theme="{Binding Theme}" />
-
-                <StackLayout Padding="15">
-                    <controls:SettingsCard x:Name="source" BindingContext="{Binding SourceCard}" />
-                    <controls:SettingsCard x:Name="settings" BindingContext="{Binding BasicSettings}" />
-                    <controls:SettingsCard BindingContext="{Binding ParagraphSettings}" />
-                    <controls:SettingsCard BindingContext="{Binding Heading1Settings}" />
-                    <controls:SettingsCard BindingContext="{Binding Heading2Settings}" />
-                    <controls:SettingsCard BindingContext="{Binding Heading3Settings}" />
-                    <controls:SettingsCard BindingContext="{Binding Heading4Settings}" />
-                    <controls:SettingsCard BindingContext="{Binding Heading5Settings}" />
-                    <controls:SettingsCard BindingContext="{Binding Heading6Settings}" />
-                    <controls:SettingsCard BindingContext="{Binding LinkSettings}" />
-                    <controls:SettingsCard BindingContext="{Binding UnorderedListSettings}" />
-                    <controls:SettingsCard BindingContext="{Binding OrderedListSettings}" />
-                    <controls:SettingsCard BindingContext="{Binding CodeSettings}" />
-                    <controls:SettingsCard BindingContext="{Binding QuoteSettings}" />
-                </StackLayout>
-
-            </StackLayout>
-        </ScrollView>
+                    VerticalOptions="FillAndExpand"
+                    IsEnabled="True"
+                    IsReadOnly="False"
+                    FontFamily="Consolas"
+                    />
+            </Grid>
+        </Grid>
 
     </ContentPage.Content>
 </ContentPage>

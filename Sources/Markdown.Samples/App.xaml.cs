@@ -1,4 +1,5 @@
-﻿using Markdown.Samples.Views;
+﻿using System.ComponentModel;
+using Markdown.Samples.Views;
 
 namespace Markdown.Samples
 {
@@ -8,7 +9,7 @@ namespace Markdown.Samples
         {
             InitializeComponent();
 
-            MainPage = new SamplesPage();
+            MainPage = new FlyoutMain();
         }
     }
 }

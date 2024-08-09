@@ -2,10 +2,11 @@
 {
     public abstract class SettingsItemViewModel : BaseViewModel
     {
-        protected readonly SamplePageViewModel vm;
+        protected readonly SettingsViewModel vm;
         public string Label { get; set; }
         public bool IsVisible { get; set; } = true;
-        public SettingsItemViewModel(SamplePageViewModel vm, string label)
+
+        public SettingsItemViewModel(SettingsViewModel vm, string label)
         {
             this.vm = vm;
             Label = label;
@@ -14,7 +15,7 @@
 
     public class SwitchSettingsItemViewModel : SettingsItemViewModel
     {
-        public SwitchSettingsItemViewModel(SamplePageViewModel vm, string label) : base(vm, label)
+        public SwitchSettingsItemViewModel(SettingsViewModel vm, string label) : base(vm, label)
         {
         }
 
@@ -25,13 +26,13 @@
         public void OnIsToggledChanged()
         {
             Action?.Invoke(IsToggled);
-            vm.RaisePropertyChanged(nameof(SamplePageViewModel.Theme));
+            vm.RaisePropertyChanged(nameof(SamplePageViewModel.Settings));
         }
     }
 
     public class EntrySettingsItemViewModel : SettingsItemViewModel
     {
-        public EntrySettingsItemViewModel(SamplePageViewModel vm, string label, string value) : base(vm, label)
+        public EntrySettingsItemViewModel(SettingsViewModel vm, string label, string value) : base(vm, label)
         {
             Value = value;
         }
@@ -43,13 +44,13 @@
         public void OnValueChanged()
         {
             Action?.Invoke(Value);
-            vm.RaisePropertyChanged(nameof(SamplePageViewModel.Theme));
+            vm.RaisePropertyChanged(nameof(SamplePageViewModel.Settings));
         }
     }
     
     public class EditorSettingsItemViewModel : SettingsItemViewModel
     {
-        public EditorSettingsItemViewModel(SamplePageViewModel vm, string label, string value) : base(vm, label)
+        public EditorSettingsItemViewModel(SettingsViewModel vm, string label, string value) : base(vm, label)
         {
             Value = value;
         }
@@ -61,13 +62,13 @@
         public void OnValueChanged()
         {
             Action?.Invoke(Value);
-            vm?.RaisePropertyChanged(nameof(SamplePageViewModel.Theme));
+            vm?.RaisePropertyChanged(nameof(SamplePageViewModel.Settings));
         }
     }
 
     public class StepperSettingsItemViewModel : SettingsItemViewModel
     {
-        public StepperSettingsItemViewModel(SamplePageViewModel vm, string label, int defaultValue) : base(vm, label)
+        public StepperSettingsItemViewModel(SettingsViewModel vm, string label, int defaultValue) : base(vm, label)
         {
             Value = defaultValue;
         }
@@ -79,13 +80,13 @@
         public void OnValueChanged()
         {
             Action?.Invoke(Value);
-            vm.RaisePropertyChanged(nameof(SamplePageViewModel.Theme));
+            vm.RaisePropertyChanged(nameof(SamplePageViewModel.Settings));
         }
     }
 
     public class PickerSettingsViewModel : SettingsItemViewModel
     {
-        public PickerSettingsViewModel(SamplePageViewModel vm, string label, List<object> items, object selectedItem) : base(vm, label)
+        public PickerSettingsViewModel(SettingsViewModel vm, string label, List<object> items, object selectedItem) : base(vm, label)
         {
             Items = items;
             SelectedItem = selectedItem;
@@ -101,7 +102,7 @@
         public void OnSelectedItemChanged()
         {
             Action?.Invoke(SelectedItem);
-            vm?.RaisePropertyChanged(nameof(SamplePageViewModel.Theme));
+            vm?.RaisePropertyChanged(nameof(SamplePageViewModel.Settings));
         }
     }
 }

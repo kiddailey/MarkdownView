@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+
+<!-- https://stackoverflow.com/questions/76043279/how-to-include-a-style-from-a-nuget-package-inside-the-net-maui-app-xaml -->
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <x:Double x:Key="MarkdownBaseFontSize">32</x:Double>
+
+    <Color x:Key="MarkdownTextColorLight">Green</Color>
+    <Color x:Key="MarkdownLinkTextColorLight">Red</Color>
+    <Color x:Key="MarkdownHighlightTextColorLight">Purple</Color>
+    <Color x:Key="MarkdownHighlightBackgroundColorLight">Cyan</Color>
+
+    <Color x:Key="MarkdownTextColorDark">LightGray</Color>
+    <Color x:Key="MarkdownLinkTextColorDark">LightBlue</Color>
+    <Color x:Key="MarkdownHighlightTextColorDark">Black</Color>
+    <Color x:Key="MarkdownHighlightBackgroundColorDark">Orange</Color>
+
+
+    <Style TargetType="StackLayout" Class="MarkdownWrapper">
+        <Setter Property="Spacing" Value="32" />
+    </Style>
+
+
+    <!-- Paragraph --><!--
+
+    <Style TargetType="Label" Class="MarkdownParagraph" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MarkdownTextColorLight}, Dark={StaticResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownParagraphQuoted" BasedOn="{StaticResource MarkdownBaseLabelQuoted}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MarkdownTextColorLight}, Dark={StaticResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownParagraph" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownBaseFontSize}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownParagraphQuoted" BasedOn="{StaticResource MarkdownBaseQuoted}">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownBaseFontSize}" />
+    </Style>-->
+
+    <!-- Bases -->
+    
+    <Style TargetType="Span" x:Key="MarkdownBase">
+        <Setter Property="TextColor" Value="Red" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownBold" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="Purple" />
+    </Style>
+
+    <Style TargetType="Image" Class="MarkdownImage">
+        <Setter Property="MaximumWidthRequest" Value="1000" />
+        <Setter Property="MaximumHeightRequest" Value="1000" />
+    </Style>
+    
+</ResourceDictionary>
