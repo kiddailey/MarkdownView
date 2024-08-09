@@ -9,11 +9,17 @@
     using System.Text.RegularExpressions;
     using Extensions;
     using Markdig;
+    using Markdig.Extensions.Abbreviations;
     using Markdig.Extensions.Tables;
     using Markdig.Extensions.TaskLists;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
-    using MauiMarkdown.Styles;
+    using MauiMarkdown.Classes;
+
+    /*
+     * https://spec.commonmark.org (Markdown Spec)
+     * https://github.github.com/gfm (Github Flavored Markdown Spec)
+     */
 
     public class MarkdownView : ContentView
     {
@@ -22,8 +28,6 @@
         const string youTubeWatchPattern = @"https?:\/\/www\.youtube\.com\/watch\?v=([^&]+)&?";
         const string youTubePattern = @"https?:\/\/youtu\.be/([^&]+)&?";
         const string youTubeCookiePattern = @"https?:\/\/www\.youtube-nocookie\.com\/embed\/([^&]+)&?";
-
-        public static MarkdownTheme Global = new LightMarkdownTheme();
 
         static readonly WebClient webClient = new WebClient();
 
@@ -43,13 +47,13 @@
 
         public static readonly BindableProperty RelativeUrlHostProperty = BindableProperty.Create(nameof(RelativeUrlHost), typeof(string), typeof(MarkdownView), null, propertyChanged: OnMarkdownChanged);
 
-        public MarkdownTheme Theme
+        public MarkdownSettings Settings
         {
-            get => (MarkdownTheme)GetValue(ThemeProperty);
-            set => SetValue(ThemeProperty, value);
+            get => (MarkdownSettings)GetValue(SettingsProperty);
+            set => SetValue(SettingsProperty, value);
         }
 
-        public static readonly BindableProperty ThemeProperty = BindableProperty.Create(nameof(Theme), typeof(MarkdownTheme), typeof(MarkdownView), Global, propertyChanged: OnMarkdownChanged);
+        public static readonly BindableProperty SettingsProperty = BindableProperty.Create(nameof(Settings), typeof(MarkdownSettings), typeof(MarkdownView), new MarkdownSettings(), propertyChanged: OnMarkdownChanged);
 
         public bool RenderEnabled
         {
@@ -76,41 +80,39 @@
 
         void RenderMarkdown()
         {
+            expandedAbbreviations.Clear();
             stack = new StackLayout()
             {
-                Spacing = Theme.VerticalSpacing,
+                StyleClass = ["MarkdownWrapper"]
             };
-
-            Padding = Theme.Margin;
-
-            BackgroundColor = Theme.BackgroundColor;
 
             if (!string.IsNullOrEmpty(Markdown))
             {
-                var pipeline = new MarkdownPipelineBuilder();
+                var pipeline = new MarkdownPipelineBuilder()
+                    .UseAbbreviations();
 
-                if (Theme.Link.UseAutolinksExtension)
+                if (Settings.UseAutolinksExtension)
                 {
                     pipeline = pipeline.UseAutoLinks();
                 }
 
-                if (Theme.UseEmphasisExtrasExtension)
+                if (Settings.UseEmphasisExtrasExtension)
                 {
                     pipeline = pipeline.UseEmphasisExtras();
                 }
 
-                if (Theme.UseTablesExtension)
+                if (Settings.UseTablesExtension)
                 {
                     pipeline = pipeline.UseGridTables();
                     pipeline = pipeline.UsePipeTables();
                 }
 
-                if (Theme.UseTaskListsExtension)
+                if (Settings.UseTaskListsExtension)
                 {
                     pipeline = pipeline.UseTaskLists();
                 }
 
-                if (Theme.UseEmojiAndSmileyExtension)
+                if (Settings.UseEmojiAndSmileyExtension)
                 {
                     pipeline = pipeline.UseEmojiAndSmiley();
                 }
@@ -144,9 +146,9 @@
                 {
                     try
                     {
-                        if (Theme.Link.CustomTapHandler != null)
+                        if (Settings.CustomTapHandler != null)
                         {
-                            Theme.Link.CustomTapHandler.Invoke(blockLinks);
+                            Settings.CustomTapHandler.Invoke(blockLinks);
                         }
                         else
                         {
@@ -154,8 +156,8 @@
                             if (blockLinks.Count > 1)
                             {
                                 var result = await Application.Current.MainPage.DisplayActionSheet(
-                                    Theme.Link.OpenLinkSheetTitle,
-                                    Theme.Link.OpenLinkSheetCancel,
+                                    Settings.OpenLinkSheetTitle,
+                                    Settings.OpenLinkSheetCancel,
                                     null,
                                     blockLinks.Select(x => x.Text).ToArray());
                                 link = blockLinks.FirstOrDefault(x => x.Text == result);
@@ -234,31 +236,26 @@
 
         void Render(ThematicBreakBlock block)
         {
-            var style = Theme.Separator;
-
-            if (style.BorderSize <= 0)
-            {
-                return;
-            }
-
             stack.Children.Add(new BoxView
             {
-                HeightRequest = style.BorderSize,
-                BackgroundColor = style.BorderColor,
+                StyleClass = ["MarkdownThematicBreak"]
             });
         }
 
+        int listScope;
+
         void Render(ListBlock block)
         {
-            var listTheme = block.IsOrdered ? Theme.OrderedList : Theme.UnorderedList;
+            var listType = block.IsOrdered ? ListStyleType.Decimal : Settings.ListStyle;
 
             var initialStack = stack;
 
             stack = new StackLayout()
             {
-                Spacing = listTheme.ItemsVerticalSpacing,
-                Margin = listTheme.ListMargin,
+                StyleClass = ["MarkdownList"],
             };
+
+            listScope++;
 
             var itemsCount = block.Count();
             for (var i = 0; i < itemsCount; i++)
@@ -267,9 +264,11 @@
 
                 if (item is ListItemBlock itemBlock)
                 {
-                    Render(block, listTheme, i + 1, itemBlock);
+                    Render(block, listType, i + 1, itemBlock);
                 }
             }
+
+            listScope--;
 
             initialStack.Children.Add(stack);
 
@@ -277,14 +276,13 @@
 
         }
 
-        void Render(ListBlock parent, ListStyle listTheme, int index, ListItemBlock block)
+        void Render(ListBlock parent, ListStyleType listType, int index, ListItemBlock block)
         {
             var initialStack = stack;
 
             stack = new StackLayout()
             {
-                Spacing = 0,
-                VerticalOptions = listTheme.ItemVerticalOptions,
+                StyleClass = [ "MarkdownList" ],
             };
 
             Render(block.AsEnumerable());
@@ -296,17 +294,18 @@
                     new ColumnDefinition() { Width = GridLength.Auto },
                     new ColumnDefinition() { Width = GridLength.Star },
                 },
-                ColumnSpacing = listTheme.Spacing ?? Theme.Margin,
+                ColumnSpacing = 0, //listTheme.Spacing ?? Theme.Margin,
                 RowSpacing = 0,
-                Margin = new Thickness(listTheme.Indentation, 0, 0, 0),
+                Margin = 0
+                // TODO : Stylize
             };
 
-            if (listTheme.BulletStyleType == ListStyleType.None)
+            if (listType == ListStyleType.None)
             {
                 horizontalStack.ColumnSpacing = 0;
             }
 
-            var bullet = GetListBullet(listTheme, index, parent, block);
+            var bullet = GetListBullet(listType, index, parent, block);
 
             if (bullet != null)
             {
@@ -320,14 +319,14 @@
             stack = initialStack;
         }
 
-        View GetListBullet(ListStyle listTheme, int index, ListBlock parent, ListItemBlock block)
+        View GetListBullet(ListStyleType listType, int index, ListBlock parent, ListItemBlock block)
         {
             TaskList? thisTaskList = null;
 
             try
             {
-                if (((Markdig.Syntax.LeafBlock)block.First()).Inline.FirstChild is TaskList)
-                    thisTaskList = ((Markdig.Syntax.LeafBlock)block.First()).Inline.FirstChild as TaskList;
+                if (((Markdig.Syntax.LeafBlock)block.FirstOrDefault())?.Inline?.FirstChild is TaskList)
+                    thisTaskList = ((Markdig.Syntax.LeafBlock)block.FirstOrDefault())?.Inline?.FirstChild as TaskList;
             }
             catch { }
 
@@ -336,53 +335,36 @@
                 return new Label()
                 {
                     Text = thisTaskList.Checked ? "\u2612" : "\u2610",
-                    Margin = 0,
-                    FontSize = Theme.Paragraph.FontSize,
-                    TextColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
-                    VerticalOptions = listTheme.TaskCheckboxVerticalOptions,
-                    HorizontalOptions = LayoutOptions.Center,
+                    Style = (Style)Application.Current.Resources["MarkdownBulletTask"]
                 };
             }
 
-            if (listTheme.BulletStyleType == ListStyleType.None)
+            if (listType == ListStyleType.None)
             {
                 return null;
             }
 
-            if (listTheme.BulletStyleType == ListStyleType.Custom)
+            if (listType == ListStyleType.Custom)
             {
-                return listTheme.CustomCallback?.Invoke(index, parent, block);
+                return Settings.ListBulletCustomCallback?.Invoke(index, parent, block);
             }
 
-            if (listTheme.BulletStyleType == ListStyleType.Decimal || listTheme.BulletStyleType == ListStyleType.Symbol)
+            if (listType == ListStyleType.Decimal || listType == ListStyleType.Symbol)
             {
                 return new Label
                 {
-                    Text = listTheme.BulletStyleType == ListStyleType.Symbol ? listTheme.Symbol : $"{index}.",
-                    FontSize = listTheme.BulletFontSize ?? Theme.Paragraph.FontSize,
-                    TextColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
-                    LineHeight = listTheme.BulletLineHeight ?? Theme.Paragraph.LineHeight,
-                    FontAttributes = listTheme.BulletFontAttributes,
-                    VerticalOptions = listTheme.BulletVerticalOptions,
+                    Text = listType == ListStyleType.Symbol ? Settings.ListSymbol : $"{index}.",
+                    Style = (Style)Application.Current.Resources["MarkdownBulletOrdered"]
                 };
             }
-            else if (listTheme.BulletStyleType == ListStyleType.Square || listTheme.BulletStyleType == ListStyleType.Circle)
+            else if (listType == ListStyleType.Square || listType == ListStyleType.Circle)
             {
                 var bullet = new Frame
                 {
-                    WidthRequest = listTheme.BulletSize,
-                    HeightRequest = listTheme.BulletSize,
-                    BackgroundColor = listTheme.BulletColor ?? Theme.Paragraph.ForegroundColor,
-                    Padding = 0,
-                    HasShadow = false,
-                    VerticalOptions = listTheme.BulletVerticalOptions,
-                    CornerRadius = 0,
+                    Style = listScope % 2 == 0 
+                        ? (Style)Application.Current.Resources["MarkdownBulletUnorderedEven"]
+                        : (Style)Application.Current.Resources["MarkdownBulletUnorderedOdd"]
                 };
-
-                if (listTheme.BulletStyleType == ListStyleType.Circle)
-                {
-                    bullet.CornerRadius = listTheme.BulletSize / 2;
-                }
 
                 return bullet;
             }
@@ -392,41 +374,22 @@
 
         void Render(HeadingBlock block)
         {
-            var style = block.Level switch
-            {
-                1 => Theme.Heading1,
-                2 => Theme.Heading2,
-                3 => Theme.Heading3,
-                4 => Theme.Heading4,
-                5 => Theme.Heading5,
-                _ => Theme.Heading6,
-            };
-            var foregroundColor = isQuoted ? Theme.Quote.ForegroundColor : style.ForegroundColor;
-
             var label = new Label
             {
-                FormattedText = CreateFormatted(block.Inline, style.FontFamily, style.Attributes, style.TextDecorations, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
-                HorizontalTextAlignment = style.HorizontalTextAlignment,
-                VerticalTextAlignment = style.VerticalTextAlignment,
+                FormattedText = CreateFormatted(block.Inline, string.Empty),
+                StyleClass = [ "MarkdownHeading" + block.Level.ToString(), isQuoted ? "MarkdownBaseLabelQuoted" : null ],
             };
 
             AttachLinks(label);
 
-            if (style.BorderSize > 0)
+            // TODO : Only render stack if boxview is defined in style?
+            var headingStack = new StackLayout();
+            headingStack.Children.Add(label);
+            headingStack.Children.Add(new BoxView
             {
-                var headingStack = new StackLayout();
-                headingStack.Children.Add(label);
-                headingStack.Children.Add(new BoxView
-                {
-                    HeightRequest = style.BorderSize,
-                    BackgroundColor = style.BorderColor,
-                });
-                stack.Children.Add(headingStack);
-            }
-            else
-            {
-                stack.Children.Add(label);
-            }
+                StyleClass = ["MarkdownHeading" + block.Level.ToString(), isQuoted ? "MarkdownHeadingBoxViewBaseQuoted" : null ]
+            });
+            stack.Children.Add(headingStack);
         }
 
         bool isHeader = false;
@@ -434,15 +397,12 @@
         void Render(Table table)
         {
             var initialStack = stack;
-            var style = Theme.Table;
 
             stack = new StackLayout();
 
             var tableGrid = new Grid
             {
-                Margin = style.Margin,
-                ColumnSpacing = style.ColumnSpacing,
-                RowSpacing = style.RowSpacing
+                StyleClass = ["MarkdownTable"],
             };
 
             for (var i = 0; i < table.ColumnDefinitions.Count; i++)
@@ -470,39 +430,33 @@
                     stack = new StackLayout();
                     if (isHeader)
                     {
-                        var cr = new CornerRadius(0);
+                        var cornerStyle = string.Empty;
 
-                        if (column == 0) cr = new CornerRadius(style.CornerRadius.TopLeft, 0, 0, 0);
-                        if (column == row.Count - 1) cr = new CornerRadius(0, style.CornerRadius.TopRight, 0, 0);
+                        if (column == 0) cornerStyle = "MarkdownTableHeaderTopLeft";
+                        if (column == row.Count - 1) cornerStyle = "MarkdownTableHeaderTopRight";
 
                         var bv = new BoxView()
                         {
-                            BackgroundColor = style.Header.BackgroundColor,
-                            CornerRadius = cr,
+                            StyleClass = [ "MarkdownTableHeader", cornerStyle],
                         };
                         tableGrid.Add(bv, column, rowCount);
-                        stack.Margin = style.Header.Padding;
-                        stack.HorizontalOptions = style.Header.HorizontalTextOptions;
-                        stack.VerticalOptions = style.Header.VerticalTextOptions;
+                        stack.StyleClass = ["MarkdownTableHeader", cornerStyle];
                     }
                     else
                     {
-                        var cr = new CornerRadius(0);
+                        var cornerStyle = string.Empty;
                         if (rowCount == table.Count - 1)
                         {
-                            if (column == 0) cr = new CornerRadius(0, 0, style.CornerRadius.BottomLeft, 0);
-                            if (column == row.Count - 1) cr = new CornerRadius(0, 0, 0, style.CornerRadius.BottomRight);
+                            if (column == 0) cornerStyle = "MarkdownTableCellBottomLeft";
+                            if (column == row.Count - 1) cornerStyle = "MarkdownTableCellBottomRight";
                         }
 
                         var bv = new BoxView()
                         {
-                            BackgroundColor = style.Cell.BackgroundColor,
-                            CornerRadius = cr,
+                            StyleClass = ["MarkdownTableCell", cornerStyle],
                         };
                         tableGrid.Add(bv, column, rowCount);
-                        stack.Margin = style.Cell.Padding;
-                        stack.HorizontalOptions = style.Cell.HorizontalTextOptions;
-                        stack.VerticalOptions = style.Cell.VerticalTextOptions;
+                        stack.StyleClass = ["MarkdownTableCell", cornerStyle];
                     }
                     Render(cell.AsEnumerable());
                     tableGrid.Add(stack, column, rowCount);
@@ -517,19 +471,22 @@
 
         void Render(ParagraphBlock block)
         {
-            var style = Theme.Paragraph;
-            var foregroundColor = isQuoted ? Theme.Quote.ForegroundColor : style.ForegroundColor;
-            var attributs = !isHeader ? style.Attributes : Theme.Table.Header.FontAttributes; ;
+            var styleName = isQuoted ? "MarkdownParagraphQuoted" : "MarkdownParagraph";
+
+            if (isHeader)
+            {
+                styleName = isQuoted ? "MarkdownTableHeaderQuoted" : "MarkdownTableHeader";
+            }
 
             var label = new Label
             {
-                FormattedText = CreateFormatted(block.Inline, style.FontFamily, attributs, style.TextDecorations, foregroundColor, style.BackgroundColor, style.FontSize, style.LineHeight),
-                HorizontalTextAlignment = style.HorizontalTextAlignment,
-                VerticalTextAlignment = style.VerticalTextAlignment,
-                TextColor = foregroundColor, 
+                FormattedText = CreateFormatted(block.Inline, styleName),
+                StyleClass = [styleName],
                 // Must set parent Label TextColor for TextDecorations such
                 // as strikethrough and underline to display due to bug
                 // See https://github.com/dotnet/maui/issues/23488
+                // Fix has been done so it won't be an issue forever
+                // StyleClass here has default TextColor defined
             };
             AttachLinks(label);
             stack.Children.Add(label);
@@ -546,37 +503,21 @@
             var initialStack = stack;
 
             isQuoted = true;
-            stack = new StackLayout()
+            var grid = new Grid()
             {
-                Spacing = Theme.VerticalSpacing,
+                StyleClass = ["MarkdownQuote"],
+                ColumnDefinitions = { 
+                    new ColumnDefinition(GridLength.Auto), 
+                    new ColumnDefinition(GridLength.Star) }
             };
 
-            var style = Theme.Quote;
-
-            if (style.BorderSize > 0)
-            {
-                var horizontalStack = new StackLayout()
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    BackgroundColor = Theme.Quote.BackgroundColor,
-                };
-
-                horizontalStack.Children.Add(new BoxView()
-                {
-                    WidthRequest = style.BorderSize,
-                    BackgroundColor = style.BorderColor,
-                });
-
-                horizontalStack.Children.Add(stack);
-                initialStack.Children.Add(horizontalStack);
-            }
-            else
-            {
-                stack.BackgroundColor = Theme.Quote.BackgroundColor;
-                initialStack.Children.Add(stack);
-            }
-
+            stack = new StackLayout() { StyleClass = ["MarkdownQuote"] };
             Render(block.AsEnumerable());
+
+            grid.Add(new BoxView() { StyleClass = ["MarkdownQuote"] }, 0);
+            grid.Add(stack, 1);
+
+            initialStack.Children.Add(grid);
 
             isQuoted = initialIsQuoted;
             stack = initialStack;
@@ -584,36 +525,29 @@
 
         void Render(CodeBlock block)
         {
-            var style = Theme.Code;
+            var language = (block is Markdig.Syntax.FencedCodeBlock && !string.IsNullOrEmpty(((Markdig.Syntax.FencedCodeBlock)block).Info))
+                ? "-Language-" + ((Markdig.Syntax.FencedCodeBlock)block).Info.ToLower()
+                : string.Empty;
+
             var label = new Label
             {
-                TextColor = style.ForegroundColor,
-                FontAttributes = style.Attributes,
-                TextDecorations = style.TextDecorations,
-                FontFamily = style.FontFamily,
-                FontSize = style.FontSize,
                 Text = string.Join(Environment.NewLine, block.Lines),
-                LineHeight = style.LineHeight,
-                HorizontalTextAlignment = style.HorizontalTextAlignment,
-                VerticalTextAlignment = style.VerticalTextAlignment,
+                StyleClass = ["MarkdownCode" + language]
             };
             stack.Children.Add(new Frame()
             {
-                CornerRadius = 3,
-                HasShadow = false,
-                Padding = Theme.Margin,
-                BackgroundColor = style.BackgroundColor,
-                Content = label
+                Content = label,
+                StyleClass = ["MarkdownCode"]
             });
         }
 
-        FormattedString CreateFormatted(ContainerInline inlines, string family, FontAttributes attributes, TextDecorations textDecorations, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
+        FormattedString CreateFormatted(ContainerInline inlines, string style)
         {
             var fs = new FormattedString();
 
             foreach (var inline in inlines)
             {
-                var spans = CreateSpans(inline, family, attributes, textDecorations, foregroundColor, backgroundColor, size, lineHeight);
+                var spans = CreateSpans(inline, style);
                 foreach (var span in spans)
                 {
                     fs.Spans.Add(span);
@@ -623,7 +557,7 @@
             return fs;
         }
 
-        Span[] CreateSpans(Inline inline, string family, FontAttributes attributes, TextDecorations textDecorations, Color foregroundColor, Color backgroundColor, float size, float lineHeight)
+        Span[] CreateSpans(Inline inline, string style)
         {
             switch (inline)
             {
@@ -632,85 +566,62 @@
                     return Array.Empty<Span>();
 
                 case LiteralInline literal:
+
+                    if (literal is Markdig.Extensions.Emoji.EmojiInline)
+                    {
+                        style = "MarkdownEmoji";
+                    }
+
                     return new[]
                     {
                         new Span
                         {
                             Text = literal.Content.Text.Substring(literal.Content.Start, literal.Content.Length),
-                            FontAttributes = attributes,
-                            TextColor = foregroundColor,
-                            BackgroundColor = backgroundColor,
-                            FontSize = size,
-                            FontFamily = family,
-                            LineHeight = lineHeight,
-                            TextDecorations = textDecorations,
+                            Style = !string.IsNullOrEmpty(style) ? (Style)Application.Current.Resources[style] : null,
                         }
                     };
 
                 case EmphasisInline emphasis:
-                    var childAttributes = attributes;
-                    var childDecorations = textDecorations;
+                    var childStyle = string.Empty;
 
                     switch (emphasis.DelimiterChar)
                     {
                         // Bold/italics
                         case '*':
                         case '_':
-                            childAttributes = childAttributes | (emphasis.DelimiterCount == 2 ? FontAttributes.Bold : FontAttributes.Italic);
+                            childStyle = emphasis.DelimiterCount == 2 ? "MarkdownBold" : "MarkdownEmphasis";
                             break;
 
                         // Strikethrough/Subscript
                         case '~':
                             if (emphasis.DelimiterCount == 2)
-                                childDecorations = childDecorations | TextDecorations.Strikethrough;
+                            {
+                                childStyle = "MarkdownStrikethrough";
+                            }
                             else
                             {
-                                family = Theme.SubScript.FontFamily;
-                                size = Theme.SubScript.FontSize;
-                                childDecorations = Theme.SubScript.TextDecorations;
-                                childAttributes = Theme.SubScript.Attributes;
-                                foregroundColor = Theme.SubScript.ForegroundColor;
-                                backgroundColor = Theme.SubScript.BackgroundColor;
-                                lineHeight = Theme.SubScript.LineHeight;
+                                childStyle = "MarkdownSubscript";
                             }
                             break;
 
                         // Superscript
                         case '^':
-                            family = Theme.SuperScript.FontFamily;
-                            size = Theme.SuperScript.FontSize;
-                            childDecorations = Theme.SuperScript.TextDecorations;
-                            childAttributes = Theme.SuperScript.Attributes;
-                            foregroundColor = Theme.SuperScript.ForegroundColor;
-                            backgroundColor = Theme.SuperScript.BackgroundColor;
-                            lineHeight = Theme.SuperScript.LineHeight;
+                            childStyle = "MarkdownSuperscript";
                             break;
 
                         // Marked
                         case '=':
                             if (emphasis.DelimiterCount != 2) break;
-                            family = Theme.Marked.FontFamily;
-                            size = Theme.Marked.FontSize;
-                            childDecorations = Theme.Marked.TextDecorations;
-                            childAttributes = Theme.Marked.Attributes;
-                            foregroundColor = Theme.Marked.ForegroundColor;
-                            backgroundColor = Theme.Marked.BackgroundColor;
-                            lineHeight = Theme.Marked.LineHeight;
+                            childStyle = "MarkdownMarked";
                             break;
 
                         // Inserted
                         case '+':
                             if (emphasis.DelimiterCount != 2) break;
-                            family = Theme.Inserted.FontFamily;
-                            size = Theme.Inserted.FontSize;
-                            childDecorations = Theme.Inserted.TextDecorations;
-                            childAttributes = Theme.Inserted.Attributes;
-                            foregroundColor = Theme.Inserted.ForegroundColor;
-                            backgroundColor = Theme.Inserted.BackgroundColor;
-                            lineHeight = Theme.Inserted.LineHeight;
+                            childStyle = "MarkdownInserted";
                             break;
                     }
-                    return emphasis.SelectMany(x => CreateSpans(x, family, childAttributes, childDecorations, foregroundColor, backgroundColor, size, lineHeight)).ToArray();
+                    return emphasis.SelectMany(x => CreateSpans(x, childStyle)).ToArray();
 
                 case LineBreakInline breakline:
                     return new[] { new Span { Text = "\n" } };
@@ -719,7 +630,7 @@
 
                     var url = link.Url;
 
-                    if (!Theme.Link.ExternalProtocols.Any(o => url.StartsWith(o)))
+                    if (!Settings.ExternalProtocols.Any(o => url.StartsWith(o)))
                     {
                         url = $"{RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
                     }
@@ -731,7 +642,7 @@
                     }
                     else if (link.IsImage)
                     {
-                        // In MAUI, image expand, so we need a Grid to contain it
+                        // In MAUI, images expand, so we need a Grid to contain it
                         var grid = new Grid()
                         {
                             RowDefinitions = [new RowDefinition(GridLength.Auto)],
@@ -744,7 +655,8 @@
                             HeightRequest = -1, // Auto height
                             WidthRequest = -1, // Auto width
                             HorizontalOptions = LayoutOptions.Center,
-                            VerticalOptions = LayoutOptions.Center
+                            VerticalOptions = LayoutOptions.Center,
+                            StyleClass = ["MarkdownImage"],
                         };
 
                         if (Path.GetExtension(url) == ".svg")
@@ -763,14 +675,14 @@
                     }
                     else
                     {
-                        var spans = link.SelectMany(x => CreateSpans(x, Theme.Link.FontFamily ?? family, Theme.Link.Attributes, Theme.Link.TextDecorations, Theme.Link.ForegroundColor, Theme.Link.BackgroundColor, size, lineHeight)).ToArray();
+                        var spans = link.SelectMany(x => CreateSpans(x, "MarkdownLink")).ToArray();
                         links.Add(new KeyValuePair<string, string>(string.Join("", spans.Select(x => x.Text)), url));
                         return spans;
                     }
 
                 case AutolinkInline autolink:
 
-                    return RenderAutolink(autolink, size, lineHeight, family);
+                    return RenderAutolink(autolink);
 
                 case CodeInline code:
                     return new[]
@@ -778,30 +690,52 @@
                         new Span()
                         {
                             Text="\u2002",
-                            FontSize = size,
-                            FontFamily = Theme.Code.FontFamily,
-                            TextColor = Theme.Code.ForegroundColor,
-                            BackgroundColor = Theme.Code.BackgroundColor
+                            Style = (Style)Application.Current.Resources["MarkdownInlineCode"]
                         },
                         new Span
                         {
                             Text = code.Content,
-                            FontAttributes = Theme.Code.Attributes,
-                            TextDecorations = Theme.Code.TextDecorations,
-                            FontSize = size,
-                            FontFamily = Theme.Code.FontFamily,
-                            TextColor = Theme.Code.ForegroundColor,
-                            BackgroundColor = Theme.Code.BackgroundColor
+                            Style = (Style)Application.Current.Resources["MarkdownInlineCode"]
                         },
                         new Span()
                         {
                             Text="\u2002",
-                            FontSize = size,
-                            FontFamily = Theme.Code.FontFamily,
-                            TextColor = Theme.Code.ForegroundColor,
-                            BackgroundColor = Theme.Code.BackgroundColor
+                            Style = (Style)Application.Current.Resources["MarkdownInlineCode"]
                         },
                     };
+                    
+                case AbbreviationInline abbr:
+
+                    var hasBeenExpanded = expandedAbbreviations.Contains(abbr.Abbreviation.Label);
+
+                    var abbrText = hasBeenExpanded
+                        ? abbr.Abbreviation.Label
+                        : abbr.Abbreviation.Label + " (" + abbr.Abbreviation.Text.ToString() + ")";
+
+                    if (!hasBeenExpanded)
+                    {
+                        expandedAbbreviations.Add(abbr.Abbreviation.Label);
+                    }
+
+                    return new[]
+                    {
+                        new Span
+                        {
+                            Text = abbrText,
+                            Style = (Style)Application.Current.Resources["MarkdownAbbreviation"]
+                        },
+                    };
+
+                case ContainerInline container:
+                    return container.SelectMany(x => CreateSpans(x, "")).ToArray();
+                    //return new[]
+                    //{
+                    //    new Span
+                    //    {
+                    //        Text = "abbr",
+                    //        Style = (Style)Application.Current.Resources["MarkdownInlineCode"]
+                    //    },
+                    //};
 
                 default:
                     Debug.WriteLine($"Can't render {inline.GetType()} inlines.");
@@ -809,7 +743,9 @@
             }
         }
 
-        Span[] RenderAutolink(AutolinkInline autolink, float fontSize, float lineHeight, string fontFamily)
+        List<string> expandedAbbreviations = new List<string>();
+
+        Span[] RenderAutolink(AutolinkInline autolink)
         {
             var url = autolink.Url;
 
@@ -826,28 +762,20 @@
 
             links.Add(new KeyValuePair<string, string>(autolink.Url, url));
 
-            var styles = Theme.Link;
-
             return new[] {
                 new Span
                 {
                     Text = autolink.Url,
-                    FontAttributes = styles.Attributes,
-                    TextDecorations = styles.TextDecorations,
-                    TextColor = styles.ForegroundColor,
-                    BackgroundColor = styles.BackgroundColor,
-                    FontSize = fontSize,
-                    FontFamily = Theme.Link.FontFamily ?? fontFamily,
-                    LineHeight = lineHeight,
+                    Style = (Style)Application.Current.Resources["MarkdownLink"]
                 }
             };
         }
 
-        bool TryLoadYouTubePreview(string url, out View image)
+        bool TryLoadYouTubePreview(string url, out View imageView)
         {
-            image = null;
+            imageView = null;
 
-            if (!Theme.Link.LoadYouTubePreview)
+            if (!Settings.LoadYoutubePreviews)
             {
                 return false;
             }
@@ -874,17 +802,16 @@
                 VideoUrl = url,
             };
 
-            var theme = Theme.Link.YouTubePreview;
-
             ImageSource imageSource;
 
-            if (theme?.CustomLoadImage != null)
+            if (Settings.YouTubePreview?.CustomLoadImage != null)
             {
-                imageSource = theme.CustomLoadImage(videoPreviewDescriptor);
+                imageSource = Settings.YouTubePreview.CustomLoadImage(videoPreviewDescriptor);
             }
             else
             {
-                imageSource = DownloadImage(theme?.GenerateLoadImageUrl?.Invoke(videoPreviewDescriptor) ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
+                imageSource = DownloadImage(Settings.YouTubePreview?.GenerateLoadImageUrl?.Invoke(videoPreviewDescriptor) 
+                    ?? $"https://img.youtube.com/vi/{code}/hqdefault.jpg");
             }
 
             if (imageSource == null)
@@ -892,18 +819,33 @@
                 return false;
             }
 
-            image = new Image
+            // In MAUI, images expand, so we need a Grid to contain it
+            imageView = new Grid()
             {
-                Source = imageSource,
+                RowDefinitions = [new RowDefinition(GridLength.Auto)],
+                ColumnDefinitions = [new ColumnDefinition(GridLength.Auto)],
+                HorizontalOptions = LayoutOptions.Center
             };
 
-            image.GestureRecognizers.Add(new TapGestureRecognizer
+            var image = new Image
+            {
+                Source = imageSource,
+                HeightRequest = -1, // Auto height
+                WidthRequest = -1, // Auto width
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                StyleClass = [ "MarkdownImage" ],
+            };
+
+            ((Grid)imageView).Add(image, 0, 0);
+
+            imageView.GestureRecognizers.Add(new TapGestureRecognizer
             {
                 Command = new Command(() =>
                 {
-                    if (Theme.Link.CustomTapHandler != null)
+                    if (Settings.CustomTapHandler != null)
                     {
-                        Theme.Link.CustomTapHandler.Invoke(new List<LinkData> { new LinkData { Link = url, Text = url } });
+                        Settings.CustomTapHandler.Invoke(new List<LinkData> { new LinkData { Link = url, Text = url } });
                     }
                     else
                     {
@@ -913,9 +855,9 @@
                 })
             });
 
-            if (theme?.TransformView != null)
+            if (Settings.YouTubePreview?.TransformView != null)
             {
-                image = theme.TransformView(image as Image, videoPreviewDescriptor);
+                imageView = Settings.YouTubePreview.TransformView(image as Image, videoPreviewDescriptor);
             }
 
             return true;

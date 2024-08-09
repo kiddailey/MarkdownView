@@ -1,0 +1,339 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiMarkdown.Styles.Default">
+    <!-- https://stackoverflow.com/questions/76043279/how-to-include-a-style-from-a-nuget-package-inside-the-net-maui-app-xaml -->
+
+    <x:Double x:Key="MarkdownBaseFontSize">14</x:Double>
+    <x:Double x:Key="MarkdownHalfFontSize">7</x:Double>
+
+    <Color x:Key="MarkdownTextColorLight">Black</Color>
+    <Color x:Key="MarkdownLinkTextColorLight">Blue</Color>
+    <Color x:Key="MarkdownHighlightTextColorLight">Black</Color>
+    <Color x:Key="MarkdownHighlightBackgroundColorLight">Yellow</Color>
+
+    <Color x:Key="MarkdownTextColorDark">LightGray</Color>
+    <Color x:Key="MarkdownLinkTextColorDark">LightBlue</Color>
+    <Color x:Key="MarkdownHighlightTextColorDark">Black</Color>
+    <Color x:Key="MarkdownHighlightBackgroundColorDark">Orange</Color>
+
+
+    <Style TargetType="StackLayout" Class="MarkdownWrapper">
+        <Setter Property="Spacing" Value="12" />
+    </Style>
+
+    <!-- Bases -->
+
+    <Style TargetType="Span" x:Key="MarkdownBase">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="MarkdownBaseLabel" Class="MarkdownBaseLabel">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownBaseQuoted">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="MarkdownBaseLabelQuoted">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownBaseLabelQuoted" BasedOn="{StaticResource MarkdownBaseLabelQuoted}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownEmoji">
+        <Setter Property="FontFamily" Value="Segoe UI Emoji" />
+    </Style>
+
+    <Style TargetType="Image" Class="MarkdownImage">
+        <Setter Property="MaximumWidthRequest" Value="300" />
+        <Setter Property="MaximumHeightRequest" Value="300" />
+    </Style>
+
+    <!-- Bold -->
+
+    <Style TargetType="Span" x:Key="MarkdownBold" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <!-- Emphasis -->
+
+    <Style TargetType="Span" x:Key="MarkdownEmphasis" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontAttributes" Value="Italic" />
+    </Style>
+
+    <!-- Super/Subscript -->
+
+    <Style TargetType="Span" x:Key="MarkdownSubscript" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownHalfFontSize}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownSuperscript" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownHalfFontSize}" />
+    </Style>
+
+    <!-- Marked -->
+
+    <Style TargetType="Span" x:Key="MarkdownMarked" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MarkdownHighlightTextColorLight}, Dark={StaticResource MarkdownHighlightTextColorDark}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource MarkdownHighlightBackgroundColorLight}, Dark={StaticResource MarkdownHighlightBackgroundColorDark}}" />
+    </Style>
+
+    <!-- Inserted -->
+
+    <Style TargetType="Span" x:Key="MarkdownInserted" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="TextDecorations" Value="Underline" />
+    </Style>
+
+    <!-- Code -->
+
+    <Style TargetType="Frame" Class="MarkdownCode">
+        <Setter Property="Margin" Value="12" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="HasShadow" Value="False" />
+        <Setter Property="BackgroundColor" Value="#20000000" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="MarkdownCode">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownBaseFontSize}" />
+        <Setter Property="FontFamily" Value="{OnPlatform WinUI='Consolas', Android='monospace', iOS='Courier New', MacCatalyst='Courier New'}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}"/>
+    </Style>
+
+    <!-- Default no language -->
+    <Style TargetType="Label" Class="MarkdownCode" BasedOn="{StaticResource MarkdownCode}">
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownCode-Language-c#" BasedOn="{StaticResource MarkdownCode}">
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownInlineCode" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontFamily" Value="{OnPlatform WinUI='Consolas', Android='monospace', iOS='Courier New', MacCatalyst='Courier New'}" />
+        <Setter Property="BackgroundColor" Value="#20000000" />
+    </Style>
+    
+    <!-- Abbreviation -->
+
+    <Style TargetType="Span" x:Key="MarkdownAbbreviation" BasedOn="{StaticResource MarkdownBase}">
+    </Style>
+
+    <!-- Quote -->
+
+    <!--<Style TargetType="Grid" Class="MarkdownQuote">
+        <Setter Property="Padding" Value="12" />
+    </Style>-->
+
+    <Style TargetType="Grid" Class="MarkdownQuote">
+        <Setter Property="Margin" Value="12" />
+        <Setter Property="BackgroundColor" Value="#20000000" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownQuote">
+        <Setter Property="WidthRequest" Value="4" />
+        <Setter Property="BackgroundColor" Value="#50000000" />
+    </Style>
+
+    <Style TargetType="StackLayout" Class="MarkdownQuote">
+        <Setter Property="Padding" Value="12" />
+    </Style>
+
+    <!-- Thematic Break / Horizontal Rule-->
+
+    <Style TargetType="BoxView" Class="MarkdownThematicBreak">
+        <Setter Property="HeightRequest" Value="2" />
+        <Setter Property="BackgroundColor" Value="#50000000" />
+    </Style>
+
+    <!-- Lists -->
+
+    <Style TargetType="StackLayout" Class="MarkdownList">
+        <Setter Property="Spacing" Value="0" />
+        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="Margin" Value="4,4,0,4" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="MarkdownBulletOrdered">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+        <Setter Property="FontSize" Value="{StaticResource MarkdownBaseFontSize}" />
+        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style TargetType="Frame" x:Key="MarkdownBulletUnorderedOdd">
+        <Setter Property="HeightRequest" Value="6" />
+        <Setter Property="WidthRequest" Value="6" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+        <Setter Property="HasShadow" Value="False" />
+        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="Margin" Value="0,12,0,0" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Frame" x:Key="MarkdownBulletUnorderedEven" BasedOn="{StaticResource MarkdownBulletUnorderedOdd}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+    </Style>
+
+    <!-- Tasks -->
+
+    <Style TargetType="Label" x:Key="MarkdownBulletTask">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!-- Paragraph -->
+
+    <Style TargetType="Label" Class="MarkdownParagraph" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownParagraphQuoted" BasedOn="{StaticResource MarkdownBaseLabelQuoted}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownParagraph" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownBaseFontSize}" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownParagraphQuoted" BasedOn="{StaticResource MarkdownBaseQuoted}">
+        <Setter Property="FontSize" Value="{StaticResource MarkdownBaseFontSize}" />
+    </Style>
+
+    <!-- Link -->
+
+    <Style TargetType="Span" x:Key="MarkdownLink" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MarkdownLinkTextColorLight}, Dark={StaticResource MarkdownLinkTextColorDark}}" />
+        <Setter Property="TextDecorations" Value="Underline" />
+    </Style>
+
+    <!-- Strikethrough -->
+
+    <Style TargetType="Span" x:Key="MarkdownStrikethrough" BasedOn="{StaticResource MarkdownBase}">
+        <Setter Property="TextDecorations" Value="Strikethrough" />
+    </Style>
+
+    <!-- Headings -->
+
+    <Style TargetType="BoxView" x:Key="MarkdownHeadingBoxViewBase">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="Opacity" Value="0.75"/>
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownHeadingBoxViewQuoted" BasedOn="{StaticResource MarkdownHeadingBoxViewBase}">
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownHeading1" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="FontSize" Value="32" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownHeading1" BasedOn="{StaticResource MarkdownHeadingBoxViewBase}">
+        <Setter Property="HeightRequest" Value="2" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownHeading2" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="FontSize" Value="26" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownHeading2" BasedOn="{StaticResource MarkdownHeadingBoxViewBase}">
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownHeading3" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="FontSize" Value="23" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownHeading3" BasedOn="{StaticResource MarkdownHeadingBoxViewBase}">
+        <Setter Property="HeightRequest" Value="0" />
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownHeading4" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="FontSize" Value="20" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownHeading4" BasedOn="{StaticResource MarkdownHeadingBoxViewBase}">
+        <Setter Property="HeightRequest" Value="0" />
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownHeading5" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="FontSize" Value="18" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownHeading6" BasedOn="{StaticResource MarkdownBaseLabel}">
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+
+    <!-- Tables -->
+
+    <Style TargetType="Grid" Class="MarkdownTable">
+        <Setter Property="ColumnSpacing" Value="1" />
+        <Setter Property="RowSpacing" Value="1" />
+        <Setter Property="Margin" Value="12" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownTableHeader">
+        <Setter Property="BackgroundColor" Value="#40000000" />
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownTableHeaderTopLeft">
+        <!--<Setter Property="CornerRadius" Value="5,0,0,0" />-->
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownTableHeaderTopRight">
+        <!--<Setter Property="CornerRadius" Value="0,5,0,0" />-->
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownTableCellBottomLeft">
+        <!--<Setter Property="CornerRadius" Value="0,0,5,0" />-->
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownTableCellBottomRight">
+        <!--<Setter Property="CornerRadius" Value="0,0,0,5" />-->
+    </Style>
+
+    <Style TargetType="BoxView" Class="MarkdownTableCell">
+        <Setter Property="BackgroundColor" Value="#20000000" />
+    </Style>
+
+    <Style TargetType="StackLayout" Class="MarkdownTableHeader">
+        <Setter Property="Margin" Value="8" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <Style TargetType="StackLayout" Class="MarkdownTableCell">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownTableHeaderBaseSpan">
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="MarkdownTableHeaderBaseLabel">
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource MarkdownTextColorLight}, Dark={DynamicResource MarkdownTextColorDark}}" />
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownTableHeader" BasedOn="{StaticResource MarkdownTableHeaderBaseLabel}">
+    </Style>
+
+    <Style TargetType="Label" Class="MarkdownTableHeaderQuoted" BasedOn="{StaticResource MarkdownTableHeaderBaseLabel}">
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownTableHeader" BasedOn="{StaticResource MarkdownTableHeaderBaseSpan}">
+    </Style>
+
+    <Style TargetType="Span" x:Key="MarkdownTableHeaderQuoted" BasedOn="{StaticResource MarkdownTableHeaderBaseSpan}">
+    </Style>
+
+</ResourceDictionary>

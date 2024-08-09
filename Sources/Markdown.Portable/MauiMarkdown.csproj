@@ -10,7 +10,7 @@
     <Title>MarkdownView for MAUI</Title>
     <Summary>Native markdown rendering for Xamarin.Forms.</Summary>
     <Description>Native markdown rendering for Xamarin.Forms.</Description>
-    <PackageTags>xamarin, ios, android, md, markdown, native, xamarin.forms</PackageTags>
+    <PackageTags>maui, ios, android, maccatalyst, windows, md, markdown, native</PackageTags>
     <Owners>Aloïs Deniel</Owners>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
@@ -32,5 +32,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.71" />
+  </ItemGroup>
+  <ItemGroup>
+    <MauiXaml Update="Styles\Default.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
   </ItemGroup>
 </Project>
