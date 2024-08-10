@@ -659,6 +659,15 @@
                             StyleClass = ["MarkdownImage"],
                         };
 
+                        if (link.FirstChild is Markdig.Syntax.Inlines.LiteralInline)
+                        {
+                            var tooltipText = ((Markdig.Syntax.Inlines.LiteralInline)link.FirstChild).Content.ToString();
+                            if (!string.IsNullOrEmpty(tooltipText))
+                            {
+                                ToolTipProperties.SetText(image, tooltipText);
+                            }
+                        }
+
                         if (Path.GetExtension(url) == ".svg")
                         {
                             image.RenderSvg(url);
